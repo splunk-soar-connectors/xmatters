@@ -22,16 +22,37 @@ from xmatters_consts import *
 
 # Generic Imports
 import requests
+import urllib
+import re
 import simplejson as json
 from bs4 import BeautifulSoup
 
 
+APP_PARAM_TO_API_PARAM_MAP = {
+    "property_name": "propertyName",
+    "property_value": "propertyValue",
+}
+
+DECODE_JSON_PARAMETERS = [
+    'recipients', 'properties',
+    'callbacks', 'conferences',
+    'response'
+]
+
+
 class RetVal(tuple):
-        def __new__(cls, val1, val2):
-                    return tuple.__new__(RetVal, (val1, val2))
+    def __new__(cls, val1, val2):
+        return tuple.__new__(RetVal, (val1, val2))
 
 
 class XMattersConnector(BaseConnector):
+    ACTION_ID_LIST_EVENTS = "list_events"
+    ACTION_ID_GET_EVENT = "get_event"
+    ACTION_ID_UPDATE_EVENT = "update_event"
+    ACTION_ID_LIST_PEOPLE = "list_people"
+    ACTION_ID_GET_PERSON = "get_person"
+    ACTION_ID_INITIATE_EVENT = "initiate_event"
+
     def __init__(self):
         super(XMattersConnector, self).__init__()
         self._base_url = None
@@ -146,6 +167,8 @@ class XMattersConnector(BaseConnector):
             # Set the action_result status to error, the handler function will most probably return as is
             return RetVal(action_result.set_status(phantom.APP_ERROR, "Error connecting: {0}".format(str(e))), None)
 
+        self.debug_print(response.url)
+
         return self._process_response(response, action_result)
 
     def _create_headers(self, h={}, **kwargs):
@@ -190,7 +213,7 @@ class XMattersConnector(BaseConnector):
         auth = None
         headers = {}
         auth = None
-        lf (self._use_token):
+        if (self._use_token):
             self.save_progress("Connecting with OAuth Token")
             ret_val, oauth_token = self._get_oauth_token(action_result)
             if (phantom.is_fail(ret_val)):
@@ -206,22 +229,205 @@ class XMattersConnector(BaseConnector):
 
         return ret_val, auth, headers
 
+    def _format_params_to_query(self, params):
+        """If you just pass with the params argument into the request, commas will be encoded to %2C
+           The API uses literal commas and %2C differently. %2C would is for when the actual field has a comma, and
+           ',' is for creating a list in the query.
+           For example: ?propertyName=isTure,floor&propertyValue=false,Balcony%2Cupper
+           %1A is the code for substitute character, which seemed fitting and unused
+        """
+        for k, v in params.iteritems():
+            if "%1A" in v:
+                self.debug_print("I'm so sorry")
+            self.debug_print(v)
+            v.replace("%2C", "%1A")
+
+        return urllib.urlencode(params).replace("%2C", ",").replace("%252C", "%2C")
 
     def _test_connectivity(self, param):
-        ection_result = ActionResult()
-        ret_val, auth, headers = self._get_authorization_credentials()
+        action_result = ActionResult()
+        ret_val, auth, headers = self._get_authorization_credentials(action_result)
         if (phantom.is_fail(ret_val)):
             return self.set_status_save_progress(phantom.APP_ERROR, "Connectivity test failed")
 
-        params = {}
-        params['search'] = "Sandy Wexler"
         self.save_progress('Making Request')
-        ret_val, response_json = self._make_rest_call(action_result, '/api/xm/1/people', params=params, headers=headers, auth=auth)
+        ret_val, response_json = self._make_rest_call(action_result, '/api/xm/1/ping', headers=headers, auth=auth)
 
         if (phantom.is_fail(ret_val)):
             return self.set_status_save_progress(phantom.APP_ERROR, "Connectivity test failed")
         else:
             return self.set_status_save_progress(phantom.APP_SUCCESS, "Connectivity test succeeded")
+
+    def _list_events(self, param):
+        action_result = self.add_action_result(ActionResult(dict(param)))
+        params = {}
+
+        ret_val, auth, headers = self._get_authorization_credentials(action_result)
+        if (phantom.is_fail(ret_val)):
+            return ret_val
+
+        # Prefer the next page if provided
+        try:
+            endpoint = param['page_uri']
+        except KeyError:
+            regex = re.compile(r",\s+")
+            for k, v in param.iteritems():
+                if k == 'context':
+                    continue
+                params[APP_PARAM_TO_API_PARAM_MAP.get(k, k)] = regex.sub(",", str(v))
+            endpoint = '/api/xm/1/events'
+            endpoint += '?' + self._format_params_to_query(params)
+
+        ret_val, response_json = self._make_rest_call(action_result, endpoint, headers=headers, auth=auth)
+
+        if (phantom.is_fail(ret_val)):
+            return ret_val
+
+        action_result.add_data(response_json)
+        try:
+            action_result.set_summary({'next_page': response_json['links']['next']})
+        except KeyError:
+            pass
+        return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _initiate_event(self, param):
+        """This API is going to be depreciated 'soon'. If this action suddenly and/or violently
+           stops functioning, that is probably what happened
+        """
+        action_result = self.add_action_result(ActionResult(dict(param)))  # noqa
+
+        endpoint = "reapi/2015-04-01/forms/{0}/triggers"  # noqa
+
+        body = {}  # noqa
+
+        ret_val, auth, headers = self._get_authorization_credentials(action_result)
+        if (phantom.is_fail(ret_val)):
+            return ret_val
+
+        for k, v in param.iteritems():
+            if k == 'context':
+                continue
+            elif k in (DECODE_JSON_PARAMETERS):
+                try:
+                    body[k] = json.loads(v)
+                except Exception as e:
+                    self.debug_print(k)
+                    self.debug_print(v)
+                    self.debug_print(json.__version__)
+                    return action_result.set_status(phantom.APP_ERROR, "Unable to parse string to json: {0}".format(str(e)))
+            else:
+                body[k] = v
+
+        self.debug_print(body)
+
+        return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _get_event(self, param):
+        action_result = self.add_action_result(ActionResult(dict(param)))
+        params = {}
+
+        event_id = param['event_id']
+        endpoint = '/api/xm/1/events/{0}'.format(event_id)
+
+        ret_val, auth, headers = self._get_authorization_credentials(action_result)
+        if (phantom.is_fail(ret_val)):
+            return ret_val
+
+        embed = []
+        if param.get('embed_recipients', False):
+            embed.append("recipients")
+            params['targeted'] = param.get('targeted', False)
+
+        if param.get('embed_response_object', False):
+            embed.append("responseObject")
+
+        if embed:
+            params['embed'] = ",".join(embed)
+
+        endpoint += '?' + self._format_params_to_query(params)
+        ret_val, response_json = self._make_rest_call(action_result, endpoint, headers=headers, auth=auth)
+
+        if (phantom.is_fail(ret_val)):
+            return ret_val
+
+        action_result.add_data(response_json)
+        return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _update_event(self, param):
+        action_result = self.add_action_result(ActionResult(dict(param)))
+        body = {}
+
+        ret_val, auth, headers = self._get_authorization_credentials(action_result)
+        if (phantom.is_fail(ret_val)):
+            return ret_val
+
+        endpoint = '/api/xm/1/events'
+
+        body['id'] = param['event_id']
+        body['status'] = param['status']
+
+        ret_val, response_json = self._make_rest_call(action_result, endpoint, headers=headers, body=body, auth=auth, method="post")
+
+        if (phantom.is_fail(ret_val)):
+            return ret_val
+
+        action_result.add_data(response_json)
+        return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _list_people(self, param):
+        action_result = self.add_action_result(ActionResult(dict(param)))
+        params = {}
+
+        ret_val, auth, headers = self._get_authorization_credentials(action_result)
+        if (phantom.is_fail(ret_val)):
+            return ret_val
+
+        try:
+            endpoint = param['page_uri']
+        except KeyError:
+            regex = re.compile(r",\s+")
+            for k, v in param.iteritems():
+                if k == 'context':
+                    continue
+                if k == 'embed_roles':
+                    params['embed'] = 'roles'
+                params[APP_PARAM_TO_API_PARAM_MAP.get(k, k)] = regex.sub(",", str(v))
+            endpoint = '/api/xm/1/people'
+            endpoint += '?' + self._format_params_to_query(params)
+
+        ret_val, response_json = self._make_rest_call(action_result, endpoint, headers=headers, auth=auth)
+
+        if (phantom.is_fail(ret_val)):
+            return ret_val
+
+        action_result.add_data(response_json)
+        try:
+            action_result.set_summary({'next_page': response_json['links']['next']})
+        except KeyError:
+            pass
+        return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _get_person(self, param):
+        action_result = self.add_action_result(ActionResult(dict(param)))
+        params = {}
+
+        person_id = param['identifier']
+        endpoint = '/api/xm/1/people/{0}'.format(person_id)
+
+        ret_val, auth, headers = self._get_authorization_credentials(action_result)
+        if (phantom.is_fail(ret_val)):
+            return ret_val
+
+        if param.get('embed_roles', False):
+            params['embed'] = 'roles'
+
+        ret_val, response_json = self._make_rest_call(action_result, endpoint, params=params, headers=headers, auth=auth)
+
+        if (phantom.is_fail(ret_val)):
+            return ret_val
+
+        action_result.add_data(response_json)
+        return action_result.set_status(phantom.APP_SUCCESS)
 
     def handle_action(self, param):
         result = None
@@ -229,6 +435,18 @@ class XMattersConnector(BaseConnector):
 
         if (action == phantom.ACTION_ID_TEST_ASSET_CONNECTIVITY):
             result = self._test_connectivity(param)
+        if (action == self.ACTION_ID_LIST_EVENTS):
+            result = self._list_events(param)
+        if (action == self.ACTION_ID_GET_EVENT):
+            result = self._get_event(param)
+        if (action == self.ACTION_ID_UPDATE_EVENT):
+            result = self._update_event(param)
+        if (action == self.ACTION_ID_LIST_PEOPLE):
+            result = self._list_people(param)
+        if (action == self.ACTION_ID_GET_PERSON):
+            result = self._get_person(param)
+        if (action == self.ACTION_ID_INITIATE_EVENT):
+            result = self._initiate_event(param)
 
         return result
 
