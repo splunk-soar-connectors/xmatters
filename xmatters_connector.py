@@ -196,6 +196,12 @@ class XMattersConnector(BaseConnector):
         headers = self._create_headers()
         ret_val, response_json = self._make_rest_call(action_result, '/api/xm/1/oauth2/token', params=params, headers=headers, method="post")
 
+        if (phantom.is_fail(ret_val) and params['grant_type'] == 'refresh_token'):
+            self.debug_print("Unable to generate new key with refresh token")
+            self._state = {}
+            # Try again, using a password
+            return self._get_new_oauth_token(action_result)
+
         if (phantom.is_fail(ret_val)):
             return RetVal(action_result.set_status(phantom.APP_ERROR, "Error in token request"), None)
 
@@ -209,11 +215,11 @@ class XMattersConnector(BaseConnector):
     def _get_oauth_token(self, action_result):
         return self._get_new_oauth_token(action_result)
 
-    def _get_authorization_credentials(self, action_result):
+    def _get_authorization_credentials(self, action_result, oauth=True):
         auth = None
         headers = {}
         auth = None
-        if (self._use_token):
+        if (self._use_token) and oauth:
             self.save_progress("Connecting with OAuth Token")
             ret_val, oauth_token = self._get_oauth_token(action_result)
             if (phantom.is_fail(ret_val)):
@@ -231,16 +237,22 @@ class XMattersConnector(BaseConnector):
 
     def _format_params_to_query(self, params):
         """If you just pass with the params argument into the request, commas will be encoded to %2C
-           The API uses literal commas and %2C differently. %2C would is for when the actual field has a comma, and
+           (Requests also uses the urlencode method on a dictionary)
+           The API uses literal commas and %2C differently. %2C would be for when the actual field has a comma, and
            ',' is for creating a list in the query.
            For example: ?propertyName=isTure,floor&propertyValue=false,Balcony%2Cupper
-           %1A is the code for substitute character, which seemed fitting and unused
+           %1A is the code for substitute character, which seemed fitting and unused, though urlencode will
+           encode this this into %251A.
         """
         for k, v in params.iteritems():
-            if "%1A" in v:
-                self.debug_print("I'm so sorry")
-            self.debug_print(v)
-            v.replace("%2C", "%1A")
+            try:
+                if "%1A" in v:
+                    self.debug_print("Check the _format_params_to_query method")
+                self.debug_print(v)
+                v.replace("%2C", "%1A")
+            except TypeError:
+                # v is a boolean or something
+                pass
 
         return urllib.urlencode(params).replace("%2C", ",").replace("%252C", "%2C")
 
@@ -270,13 +282,14 @@ class XMattersConnector(BaseConnector):
         try:
             endpoint = param['page_uri']
         except KeyError:
-            regex = re.compile(r",\s+")
+            regex = re.compile(r",\s+")  # Comma followed by whitespace
             for k, v in param.iteritems():
                 if k == 'context':
                     continue
-                params[APP_PARAM_TO_API_PARAM_MAP.get(k, k)] = regex.sub(",", str(v))
+                params[APP_PARAM_TO_API_PARAM_MAP.get(k, k)] = regex.sub(",", str(v))  # Remove any whitespace after commas
             endpoint = '/api/xm/1/events'
-            endpoint += '?' + self._format_params_to_query(params)
+            endpoint += '?{0}'.format(self._format_params_to_query(params))
+            self.debug_print(endpoint)
 
         ret_val, response_json = self._make_rest_call(action_result, endpoint, headers=headers, auth=auth)
 
@@ -294,32 +307,38 @@ class XMattersConnector(BaseConnector):
         """This API is going to be depreciated 'soon'. If this action suddenly and/or violently
            stops functioning, that is probably what happened
         """
-        action_result = self.add_action_result(ActionResult(dict(param)))  # noqa
+        action_result = self.add_action_result(ActionResult(dict(param)))
 
-        endpoint = "reapi/2015-04-01/forms/{0}/triggers"  # noqa
+        endpoint = "/reapi/2015-04-01/forms/{0}/triggers"  # noqa
 
         body = {}  # noqa
 
-        ret_val, auth, headers = self._get_authorization_credentials(action_result)
+        # Oauth doesn't work with this endpoint
+        ret_val, auth, headers = self._get_authorization_credentials(action_result, oauth=False)
         if (phantom.is_fail(ret_val)):
             return ret_val
 
         for k, v in param.iteritems():
             if k == 'context':
                 continue
-            elif k in (DECODE_JSON_PARAMETERS):
+            elif k == 'form_uuid':
+                endpoint = endpoint.format(v)
+            elif k in DECODE_JSON_PARAMETERS:
                 try:
                     body[k] = json.loads(v)
                 except Exception as e:
                     self.debug_print(k)
                     self.debug_print(v)
-                    self.debug_print(json.__version__)
-                    return action_result.set_status(phantom.APP_ERROR, "Unable to parse string to json: {0}".format(str(e)))
+                    return action_result.set_status(phantom.APP_ERROR, "Unable to parse parameter '{0}' to json: {1}".format(k, str(e)))
             else:
                 body[k] = v
 
-        self.debug_print(body)
+        ret_val, response_json = self._make_rest_call(action_result, endpoint, body=body, headers=headers, auth=auth, method="post")
 
+        if (phantom.is_fail(ret_val)):
+            return ret_val
+
+        action_result.add_data(response_json)
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _get_event(self, param):
@@ -338,13 +357,13 @@ class XMattersConnector(BaseConnector):
             embed.append("recipients")
             params['targeted'] = param.get('targeted', False)
 
-        if param.get('embed_response_object', False):
-            embed.append("responseObject")
+        if param.get('embed_response_options', False):
+            embed.append("responseOptions")
 
         if embed:
             params['embed'] = ",".join(embed)
 
-        endpoint += '?' + self._format_params_to_query(params)
+        endpoint += '?{0}'.format(self._format_params_to_query(params))
         ret_val, response_json = self._make_rest_call(action_result, endpoint, headers=headers, auth=auth)
 
         if (phantom.is_fail(ret_val)):
@@ -393,7 +412,7 @@ class XMattersConnector(BaseConnector):
                     params['embed'] = 'roles'
                 params[APP_PARAM_TO_API_PARAM_MAP.get(k, k)] = regex.sub(",", str(v))
             endpoint = '/api/xm/1/people'
-            endpoint += '?' + self._format_params_to_query(params)
+            endpoint += '?{0}'.format(self._format_params_to_query(params))
 
         ret_val, response_json = self._make_rest_call(action_result, endpoint, headers=headers, auth=auth)
 
