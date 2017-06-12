@@ -215,11 +215,11 @@ class XMattersConnector(BaseConnector):
     def _get_oauth_token(self, action_result):
         return self._get_new_oauth_token(action_result)
 
-    def _get_authorization_credentials(self, action_result, oauth=True):
+    def _get_authorization_credentials(self, action_result):
         auth = None
         headers = {}
         auth = None
-        if (self._use_token) and oauth:
+        if (self._use_token):
             self.save_progress("Connecting with OAuth Token")
             ret_val, oauth_token = self._get_oauth_token(action_result)
             if (phantom.is_fail(ret_val)):
@@ -314,7 +314,7 @@ class XMattersConnector(BaseConnector):
         body = {}  # noqa
 
         # Oauth doesn't work with this endpoint
-        ret_val, auth, headers = self._get_authorization_credentials(action_result, oauth=False)
+        ret_val, auth, headers = self._get_authorization_credentials(action_result)
         if (phantom.is_fail(ret_val)):
             return ret_val
 
