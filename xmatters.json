@@ -63,7 +63,8 @@
           "data_type": "string",
           "required": true,
           "order": 0,
-          "contains": ["xmatters event id"]
+          "contains": ["xmatters event id"],
+          "primary": true
         },
         "embed_recipients": {
           "description": "Embed Recipients",
@@ -830,7 +831,8 @@
           "data_type": "string",
           "required": true,
           "order": 0,
-          "contains": ["xmatters targetName", "xmatters person ID"]
+          "contains": ["xmatters targetName", "xmatters person ID"],
+          "primary": true
         },
         "embed_roles": {
           "description": "Include a list of each persons's roles",
