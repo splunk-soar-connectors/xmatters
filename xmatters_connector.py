@@ -1,7 +1,7 @@
 # --
 # File: xmatters_connector.py
 #
-# Copyright (c) Phantom Cyber Corporation, 2014-2017
+# Copyright (c) Phantom Cyber Corporation, 2017
 #
 # This unpublished material is proprietary to Phantom Cyber.
 # All rights reserved. The methods and
@@ -212,16 +212,13 @@ class XMattersConnector(BaseConnector):
             self._state = {}
             return RetVal(action_result.set_status(phantom.APP_ERROR, "Unable to parse access token", e), None)
 
-    def _get_oauth_token(self, action_result):
-        return self._get_new_oauth_token(action_result)
-
     def _get_authorization_credentials(self, action_result):
         auth = None
         headers = {}
         auth = None
         if (self._use_token):
             self.save_progress("Connecting with OAuth Token")
-            ret_val, oauth_token = self._get_oauth_token(action_result)
+            ret_val, oauth_token = self._get_new_oauth_token(action_result)
             if (phantom.is_fail(ret_val)):
                 return ret_val, None, None
             self.save_progress("OAuth Token Retrieved")

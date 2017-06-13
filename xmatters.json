@@ -1,8 +1,8 @@
 {
   "appid": "60E80285-8850-417A-9617-2423D6B9CA76",
   "name": "xMatters",
-  "description": "This app supports various <b>Generic</b> actions on <b>xMatters</b>.",
-  "type": "people management",
+  "description": "This app supports various <b>generic</b> actions on <b>xMatters</b>.",
+  "type": "Generic",
   "publisher": "Phantom",
   "main_module": "xmatters_connector.pyc",
   "app_version": "1.0.0",
@@ -12,7 +12,7 @@
   "product_version_regex": ".*",
   "min_phantom_version": "2.1.452",
   "logo": "xmatters.png",
-  "license": "Copyright (c) Phantom Cyber Corporation 2015-2017",
+  "license": "Copyright (c) Phantom Cyber Corporation 2017",
   "configuration": {
     "username": {
       "data_type": "string",
@@ -434,7 +434,9 @@
           "description": "Event ID",
           "data_type": "string",
           "required": true,
-          "order": 0
+          "contains": ["xmatters event id"],
+          "order": 0,
+          "primary": true
         },
         "status": {
           "description": "Status of the event",
@@ -794,6 +796,7 @@
         {
           "data_path": "action_result.parameter.event_id",
           "data_type": "string",
+          "contains": ["xmatters event id"],
           "example_values": [
             "2132003"
           ]
