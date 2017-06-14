@@ -26,6 +26,7 @@ import urllib
 import re
 import simplejson as json
 from bs4 import BeautifulSoup
+from datetime import datetime
 
 
 APP_PARAM_TO_API_PARAM_MAP = {
@@ -38,6 +39,12 @@ DECODE_JSON_PARAMETERS = [
     'callbacks', 'conferences',
     'response'
 ]
+
+DT_STR_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
+
+
+class UnauthorizedOAuthTokenException(Exception):
+    pass
 
 
 class RetVal(tuple):
@@ -59,6 +66,7 @@ class XMattersConnector(BaseConnector):
         self._username = None
         self._password = None
         self._client_id = None
+        self._try_oauth = False
         self._use_token = False
         self._state = {}
         self._oauth_obj = None
@@ -117,6 +125,11 @@ class XMattersConnector(BaseConnector):
 
         if (200 <= r.status_code < 205):
             return RetVal(phantom.APP_SUCCESS, resp_json)
+
+        # Unauthorized Request
+        if (r.status_code == 401):
+            if resp_json.get('error') == 'invalid_token':
+                raise UnauthorizedOAuthTokenException
 
         action_result.add_data(resp_json)
         message = r.text.replace('{', '{{').replace('}', '}}')
@@ -206,11 +219,28 @@ class XMattersConnector(BaseConnector):
             return RetVal(action_result.set_status(phantom.APP_ERROR, "Error in token request"), None)
 
         self._state['oauth_token'] = response_json
+        self._state['retrieval_time'] = datetime.now().strftime(DT_STR_FORMAT)
         try:
             return RetVal(phantom.APP_SUCCESS, response_json['access_token'])
         except Exception as e:
             self._state = {}
             return RetVal(action_result.set_status(phantom.APP_ERROR, "Unable to parse access token", e), None)
+
+    def _get_oauth_token(self, action_result):
+        if (self._state.get('oauth_token')):
+            expires_in = self._state.get('oauth_token', {}).get('expires_in', 0)
+            self.debug_print("Expires in", expires_in)
+            try:
+                diff = (datetime.now() - datetime.strptime(self._state['retrieval_time'], DT_STR_FORMAT)).total_seconds()
+                if (diff < expires_in - 1):  # Error margin of a second
+                    self.debug_print("Using old OAuth Token")
+                    return RetVal(action_result.set_status(phantom.APP_SUCCESS), self._state['oauth_token']['access_token'])
+            except KeyError:
+                self.debug_print("Key Error")
+                pass
+
+        self.debug_print("Generating new OAuth Token")
+        return self._get_new_oauth_token(action_result)
 
     def _get_authorization_credentials(self, action_result):
         auth = None
@@ -218,11 +248,12 @@ class XMattersConnector(BaseConnector):
         auth = None
         if (self._use_token):
             self.save_progress("Connecting with OAuth Token")
-            ret_val, oauth_token = self._get_new_oauth_token(action_result)
+            ret_val, oauth_token = self._get_oauth_token(action_result)
             if (phantom.is_fail(ret_val)):
                 return ret_val, None, None
             self.save_progress("OAuth Token Retrieved")
             headers = self._create_headers({'Authorization': 'Bearer {0}'.format(oauth_token)})
+            self._try_oauth = True
         else:
             ret_val = phantom.APP_SUCCESS
             self.save_progress("Connecting without OAuth Token")
@@ -231,6 +262,20 @@ class XMattersConnector(BaseConnector):
             headers = self._create_headers()
 
         return ret_val, auth, headers
+
+    def _make_rest_call_helper(self, action_result, endpoint, params={}, body={}, headers={}, method="get", auth=None):
+        try:
+            return self._make_rest_call(action_result, endpoint, params=params, body=body, headers=headers, method=method, auth=auth)
+        except UnauthorizedOAuthTokenException:
+            # We should only be here if we didn't generate a new token, and if the old token wasn't valid
+            # (Hopefully) this should only happen if more than a second passes between getting the token and
+            # making the rest call
+            if self._try_oauth:
+                self._try_oauth = False
+                return self._make_rest_call_helper(
+                    action_result, endpoint, params=params, body=body, headers=headers, method=method, auth=auth
+                )
+            return RetVal(action_result.set_status(phantom.APP_ERROR, "Unable to authorize with OAuth token"), None)
 
     def _format_params_to_query(self, params):
         """If you just pass with the params argument into the request, commas will be encoded to %2C
@@ -260,7 +305,7 @@ class XMattersConnector(BaseConnector):
             return self.set_status_save_progress(phantom.APP_ERROR, "Connectivity test failed")
 
         self.save_progress('Making Request')
-        ret_val, response_json = self._make_rest_call(action_result, '/api/xm/1/ping', headers=headers, auth=auth)
+        ret_val, response_json = self._make_rest_call_helper(action_result, '/api/xm/1/ping', headers=headers, auth=auth)
 
         if (phantom.is_fail(ret_val)):
             return self.set_status_save_progress(phantom.APP_ERROR, "Connectivity test failed")
@@ -288,7 +333,7 @@ class XMattersConnector(BaseConnector):
             endpoint += '?{0}'.format(self._format_params_to_query(params))
             self.debug_print(endpoint)
 
-        ret_val, response_json = self._make_rest_call(action_result, endpoint, headers=headers, auth=auth)
+        ret_val, response_json = self._make_rest_call_helper(action_result, endpoint, headers=headers, auth=auth)
 
         if (phantom.is_fail(ret_val)):
             return ret_val
@@ -330,7 +375,7 @@ class XMattersConnector(BaseConnector):
             else:
                 body[k] = v
 
-        ret_val, response_json = self._make_rest_call(action_result, endpoint, body=body, headers=headers, auth=auth, method="post")
+        ret_val, response_json = self._make_rest_call_helper(action_result, endpoint, body=body, headers=headers, auth=auth, method="post")
 
         if (phantom.is_fail(ret_val)):
             return ret_val
@@ -361,7 +406,7 @@ class XMattersConnector(BaseConnector):
             params['embed'] = ",".join(embed)
 
         endpoint += '?{0}'.format(self._format_params_to_query(params))
-        ret_val, response_json = self._make_rest_call(action_result, endpoint, headers=headers, auth=auth)
+        ret_val, response_json = self._make_rest_call_helper(action_result, endpoint, headers=headers, auth=auth)
 
         if (phantom.is_fail(ret_val)):
             return ret_val
@@ -382,7 +427,7 @@ class XMattersConnector(BaseConnector):
         body['id'] = param['event_id']
         body['status'] = param['status']
 
-        ret_val, response_json = self._make_rest_call(action_result, endpoint, headers=headers, body=body, auth=auth, method="post")
+        ret_val, response_json = self._make_rest_call_helper(action_result, endpoint, headers=headers, body=body, auth=auth, method="post")
 
         if (phantom.is_fail(ret_val)):
             return ret_val
@@ -411,7 +456,7 @@ class XMattersConnector(BaseConnector):
             endpoint = '/api/xm/1/people'
             endpoint += '?{0}'.format(self._format_params_to_query(params))
 
-        ret_val, response_json = self._make_rest_call(action_result, endpoint, headers=headers, auth=auth)
+        ret_val, response_json = self._make_rest_call_helper(action_result, endpoint, headers=headers, auth=auth)
 
         if (phantom.is_fail(ret_val)):
             return ret_val
@@ -437,7 +482,7 @@ class XMattersConnector(BaseConnector):
         if param.get('embed_roles', False):
             params['embed'] = 'roles'
 
-        ret_val, response_json = self._make_rest_call(action_result, endpoint, params=params, headers=headers, auth=auth)
+        ret_val, response_json = self._make_rest_call_helper(action_result, endpoint, params=params, headers=headers, auth=auth)
 
         if (phantom.is_fail(ret_val)):
             return ret_val
