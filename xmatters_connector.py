@@ -226,13 +226,13 @@ class XMattersConnector(BaseConnector):
             self._state = {}
             return RetVal(action_result.set_status(phantom.APP_ERROR, "Unable to parse access token", e), None)
 
-    def _get_oauth_token(self, action_result):
-        if (self._state.get('oauth_token')):
+    def _get_oauth_token(self, action_result, force_new=False):
+        if (self._state.get('oauth_token') and not force_new):
             expires_in = self._state.get('oauth_token', {}).get('expires_in', 0)
-            self.debug_print("Expires in", expires_in)
             try:
                 diff = (datetime.now() - datetime.strptime(self._state['retrieval_time'], DT_STR_FORMAT)).total_seconds()
-                if (diff < expires_in - 1):  # Error margin of a second
+                self.debug_print(diff)
+                if (diff < expires_in):
                     self.debug_print("Using old OAuth Token")
                     return RetVal(action_result.set_status(phantom.APP_SUCCESS), self._state['oauth_token']['access_token'])
             except KeyError:
@@ -242,13 +242,13 @@ class XMattersConnector(BaseConnector):
         self.debug_print("Generating new OAuth Token")
         return self._get_new_oauth_token(action_result)
 
-    def _get_authorization_credentials(self, action_result):
+    def _get_authorization_credentials(self, action_result, force_new=False):
         auth = None
         headers = {}
         auth = None
         if (self._use_token):
             self.save_progress("Connecting with OAuth Token")
-            ret_val, oauth_token = self._get_oauth_token(action_result)
+            ret_val, oauth_token = self._get_oauth_token(action_result, force_new)
             if (phantom.is_fail(ret_val)):
                 return ret_val, None, None
             self.save_progress("OAuth Token Retrieved")
@@ -268,10 +268,13 @@ class XMattersConnector(BaseConnector):
             return self._make_rest_call(action_result, endpoint, params=params, body=body, headers=headers, method=method, auth=auth)
         except UnauthorizedOAuthTokenException:
             # We should only be here if we didn't generate a new token, and if the old token wasn't valid
-            # (Hopefully) this should only happen if more than a second passes between getting the token and
-            # making the rest call
+            # (Hopefully) this should only happen rarely
+            self.debug_print("UnauthorizedOAuthTokenException")
             if self._try_oauth:
                 self._try_oauth = False
+                ret_val, auth, headers = self._get_authorization_credentials(action_result, force_new=True)
+                if (phantom.is_fail(ret_val)):
+                    return RetVal(phantom.APP_ERROR, None)
                 return self._make_rest_call_helper(
                     action_result, endpoint, params=params, body=body, headers=headers, method=method, auth=auth
                 )
