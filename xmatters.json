@@ -184,7 +184,8 @@
         },
         {
           "data_path": "action_result.data.*.submitter.targetName",
-          "data_type": "string",
+          "data_type": "string", 
+          "contains": ["xmatters target name"],
           "example_values": [
             "herman"
           ]
@@ -249,7 +250,7 @@
           "data_path": "action_result.data.*.recipients.data.*.targeted",
           "data_type": "boolean",
           "example_values": [
-            "True"
+            "True", "False"
           ]
         },
         {
@@ -276,6 +277,7 @@
         {
           "data_path": "action_result.data.*.recipients.data.*.targetName",
           "data_type": "string",
+          "contains": ["xmatters target name"],
           "example_values": [
             "cdatem"
           ]
@@ -291,7 +293,7 @@
           "data_path": "action_result.data.*.recipients.data.*.externallyOwned",
           "data_type": "boolean",
           "example_values": [
-            "False"
+            "False", "True"
           ]
         },
         {
@@ -326,14 +328,14 @@
           "data_path": "action_result.data.*.bypassPhoneIntro",
           "data_type": "boolean",
           "example_values": [
-            "False"
+            "False", "True"
           ]
         },
         {
           "data_path": "action_result.data.*.escalationOverride",
           "data_type": "boolean",
           "example_values": [
-            "False"
+            "False", "True"
           ]
         },
         {
@@ -347,7 +349,7 @@
           "data_path": "action_result.data.*.requirePhonePassword",
           "data_type": "boolean",
           "example_values": [
-            "False"
+            "False", "True"
           ]
         },
         {
@@ -361,7 +363,7 @@
           "data_path": "action_result.data.*.overrideDeviceRestrictions",
           "data_type": "boolean",
           "example_values": [
-            "False"
+            "False", "True"
           ]
         },
         {
@@ -394,21 +396,21 @@
           "data_path": "action_result.parameter.targeted",
           "data_type": "boolean",
           "example_values": [
-            "True"
+            "True", "False"
           ]
         },
         {
           "data_path": "action_result.parameter.embed_recipients",
           "data_type": "boolean",
           "example_values": [
-            "True"
+            "True", "False"
           ]
         },
         {
           "data_path": "action_result.parameter.embed_response_options",
           "data_type": "boolean",
           "example_values": [
-            "True"
+            "True", "False"
           ]
         },
         {
@@ -538,6 +540,7 @@
         {
           "data_path": "action_result.data.*.submitter.targetName",
           "data_type": "string",
+          "contains": ["xmatters target name"],
           "example_values": [
             "herman"
           ]
@@ -602,7 +605,7 @@
           "data_path": "action_result.data.*.recipients.data.*.targeted",
           "data_type": "boolean",
           "example_values": [
-            "True"
+            "True", "False"
           ]
         },
         {
@@ -629,6 +632,7 @@
         {
           "data_path": "action_result.data.*.recipients.data.*.targetName",
           "data_type": "string",
+          "contains": ["xmatters target name"],
           "example_values": [
             "bafflac"
           ]
@@ -644,7 +648,7 @@
           "data_path": "action_result.data.*.recipients.data.*.externallyOwned",
           "data_type": "boolean",
           "example_values": [
-            "False"
+            "False", "True"
           ]
         },
         {
@@ -714,7 +718,7 @@
           "data_path": "action_result.data.*.responseOptions.data.*.joinConference",
           "data_type": "boolean",
           "example_values": [
-            "False"
+            "False", "True"
           ]
         },
         {
@@ -735,14 +739,14 @@
           "data_path": "action_result.data.*.bypassPhoneIntro",
           "data_type": "boolean",
           "example_values": [
-            "False"
+            "False", "True"
           ]
         },
         {
           "data_path": "action_result.data.*.escalationOverride",
           "data_type": "boolean",
           "example_values": [
-            "False"
+            "False", "True"
           ]
         },
         {
@@ -756,7 +760,7 @@
           "data_path": "action_result.data.*.requirePhonePassword",
           "data_type": "boolean",
           "example_values": [
-            "False"
+            "False", "True"
           ]
         },
         {
@@ -770,7 +774,7 @@
           "data_path": "action_result.data.*.overrideDeviceRestrictions",
           "data_type": "boolean",
           "example_values": [
-            "False"
+            "False", "True"
           ]
         },
         {
@@ -835,7 +839,7 @@
           "data_type": "string",
           "required": true,
           "order": 0,
-          "contains": ["xmatters targetName", "xmatters person ID"],
+          "contains": ["xmatters target name", "xmatters person ID"],
           "primary": true
         },
         "embed_roles": {
@@ -887,7 +891,7 @@
           "example_values": [
             "bafflac"
           ],
-          "contains": ["xmatters targetName"],
+          "contains": ["xmatters target name"],
           "column_name": "Target Name",
           "column_order": 3
         },
@@ -988,7 +992,7 @@
           "data_path": "action_result.data.*.externallyOwned",
           "data_type": "boolean",
           "example_values": [
-            "False"
+            "False", "True"
           ]
         },
         {
@@ -1015,13 +1019,13 @@
           "example_values": [
             "059c47aa-4951-46d7-bc68-073e73c900e6"
           ],
-          "contains": ["xmatters targetName", "xmatters person ID"]
+          "contains": ["xmatters target name", "xmatters person ID"]
         },
         {
           "data_path": "action_result.parameter.embed_roles",
           "data_type": "boolean",
           "example_values": [
-            "True"
+            "True", "False"
           ]
         },
         {
@@ -1275,7 +1279,7 @@
           "example_values": [
             "bafflac"
           ],
-          "contains": ["xmatters targetName"],
+          "contains": ["xmatters target name"],
           "column_name": "Target Name",
           "column_order": 3
         },
@@ -1349,7 +1353,7 @@
           "data_path": "action_result.data.*.data.*.externallyOwned",
           "data_type": "boolean",
           "example_values": [
-            "False"
+            "False", "True"
           ]
         },
         {
@@ -1423,7 +1427,7 @@
           "data_path": "action_result.parameter.embed_roles",
           "data_type": "boolean",
           "example_values": [
-            "True"
+            "True", "False"
           ]
         },
         {
@@ -1608,7 +1612,8 @@
           "data_type": "string",
           "example_values": [
             "herman"
-            ]
+          ],
+          "contains": ["xmatters target name"]
         },
         {
           "data_path": "action_result.data.*.data.*.terminated",
@@ -1621,28 +1626,28 @@
           "data_path": "action_result.data.*.data.*.bypassPhoneIntro",
           "data_type": "boolean",
           "example_values": [
-            "False"
+            "False", "True"
             ]
         },
         {
           "data_path": "action_result.data.*.data.*.escalationOverride",
           "data_type": "boolean",
           "example_values": [
-            "False"
+            "False", "True"
             ]
         },
         {
           "data_path": "action_result.data.*.data.*.requirePhonePassword",
           "data_type": "boolean",
           "example_values": [
-            "False"
+            "False", "True"
             ]
         },
         {
           "data_path": "action_result.data.*.data.*.overrideDeviceRestrictions",
           "data_type": "boolean",
           "example_values": [
-            "False"
+            "False", "True"
             ]
         },
         {
@@ -1750,14 +1755,14 @@
           "data_type": "numeric",
           "example_values": [
             "1"
-            ]
+          ]
         },
         {
           "data_path": "summary.total_objects_successful",
           "data_type": "numeric",
           "example_values": [
             "1"
-            ]
+          ]
         }
       ],
       "versions": "EQ(*)"
