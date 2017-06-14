@@ -256,7 +256,7 @@ class XMattersConnector(BaseConnector):
             self._try_oauth = True
         else:
             ret_val = phantom.APP_SUCCESS
-            self.save_progress("Connecting without OAuth Token")
+            self.save_progress("Connecting with HTTP Basic Auth")
             config = self.get_config()
             auth = requests.auth.HTTPBasicAuth(config[XM_CONFIG_USERNAME], config[XM_CONFIG_PASSWORD])
             headers = self._create_headers()
