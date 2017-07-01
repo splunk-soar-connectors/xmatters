@@ -1200,7 +1200,8 @@
           "description": "Search term. Will check first name, last name, weblogin, etc. Seperate values with either a space or a + sign",
           "data_type": "string",
           "required": false, 
-          "order": 0
+          "order": 0,
+          "primary": true
         },
         "embed_roles": {
           "description": "Include a list of each persons's roles",
@@ -1475,14 +1476,16 @@
           "data_type": "string",
           "required": false,
           "order": 0,
-          "allow_list": false
+          "allow_list": false,
+          "primary": true
         },
         "property_value": {
           "description": "Comma seperated list of property values",
           "data_type": "string",
           "required": false,
           "order": 1,
-          "allow_list": false
+          "allow_list": false,
+          "primary": true
         },
         "offset": {
           "description": "Number of items to skip before returning results",
