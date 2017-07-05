@@ -35,9 +35,8 @@ APP_PARAM_TO_API_PARAM_MAP = {
 }
 
 DECODE_JSON_PARAMETERS = [
-    'recipients', 'properties',
+    'properties', 'response'
     'callbacks', 'conferences',
-    'response'
 ]
 
 DT_STR_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
@@ -374,6 +373,10 @@ class XMattersConnector(BaseConnector):
                 continue
             elif k == 'form_uuid':
                 endpoint = endpoint.format(v)
+            elif k == 'recipients':
+                tnames = v.split(',')
+                recipients = [{'targetName': x.strip()} for x in tnames]
+                body[k] = recipients
             elif k in DECODE_JSON_PARAMETERS:
                 try:
                     body[k] = json.loads(v)
@@ -384,6 +387,7 @@ class XMattersConnector(BaseConnector):
             else:
                 body[k] = v
 
+        self.debug_print(body)
         ret_val, response_json = self._make_rest_call_helper(action_result, endpoint, body=body, headers=headers, auth=auth, method="post")
 
         if (phantom.is_fail(ret_val)):

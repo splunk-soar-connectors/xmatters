@@ -1064,10 +1064,11 @@
           "contains": ["xmatters form uuid"]
         },
         "recipients": {
-          "description": "The list of User Objects, e.g. [{user1}, {user2}]",
+          "description": "Comma seperate list of user names",
           "data_type": "string",
           "required": true,
-          "order": 1
+          "order": 1,
+          "primary": true
         },
         "properties": {
           "description": "A JSON object of property names and values",
