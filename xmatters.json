@@ -1,7 +1,7 @@
 {
   "appid": "60E80285-8850-417A-9617-2423D6B9CA76",
   "name": "xMatters",
-  "description": "This app provides xMatters integration for people and events.",
+  "description": "This app integrates with xMatters to retrieve information about events and users",
   "type": "generic",
   "publisher": "Phantom",
   "main_module": "xmatters_connector.pyc",
@@ -47,7 +47,7 @@
   "actions": [
     {
       "action": "test connectivity",
-      "description": "Validate the asset configuration for connectivity. This action runs a quick query on the server to check the connection and credentials.",
+      "description": "This action runs a quick query on the server to check the connection and credentials",
       "type": "test",
       "identifier": "test_asset_connectivity",
       "read_only": true,
@@ -58,7 +58,7 @@
     },
     {
       "action": "get event",
-      "description": "List information about a specific event",
+      "description": "Get information about a single event",
       "type": "generic",
       "identifier": "get_event",
       "read_only": true,
@@ -831,8 +831,8 @@
       "versions":"EQ(*)"
     },
     {
-      "action": "get person",
-      "description": "Get a single person object",
+      "action": "get user",
+      "description": "Get information about a user",
       "type": "generic",
       "identifier": "get_person",
       "read_only": true,
@@ -1049,8 +1049,8 @@
       "versions": "EQ(*)"
     },
     {
-      "action": "initiate event",
-      "description": "Initiate an event.",
+      "action": "create event",
+      "description": "Create (trigger) an event in xMatters",
       "verbose": "See <a href=\"https://help.xmatters.com/OnDemand/xmodwelcome/communicationplanbuilder/appendixrestapi.htm?cshid=apiPOSTtrigger#POSTtrigger\">this link</a> for more information on the parameters. The input expects the actual string literal representations of their respective fields. Lists need to be enclosed in square braces, objects in curly braces, etc.",
       "type": "generic", 
       "identifier": "initiate_event",
@@ -1086,7 +1086,7 @@
           "description": "The priority of the event",
           "data_type": "string",
           "required": false,
-          "value_list": ["", "low", "medium", "high", "critical"],
+          "value_list": ["", "low", "medium", "high"],
           "order": 4
         },
         "conferences": {
@@ -1191,8 +1191,8 @@
       "versions": "EQ(*)"
     },
     {
-      "action": "list people",
-      "description": "List people. You can query for a specific per by providing a property name and property value",
+      "action": "list users",
+      "description": "Get information about multiple users matching a property name/value",
       "type": "generic",
       "identifier": "list_people",
       "read_only": true,
