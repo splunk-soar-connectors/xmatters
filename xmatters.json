@@ -1,7 +1,7 @@
 {
   "appid": "60E80285-8850-417A-9617-2423D6B9CA76",
   "name": "xMatters",
-  "description": "This app supports various <b>generic</b> actions on <b>xMatters</b>.",
+  "description": "This app provides xMatters integration for people and events.",
   "type": "generic",
   "publisher": "Phantom",
   "main_module": "xmatters_connector.pyc",
