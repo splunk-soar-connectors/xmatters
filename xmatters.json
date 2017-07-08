@@ -2,7 +2,7 @@
   "appid": "60E80285-8850-417A-9617-2423D6B9CA76",
   "name": "xMatters",
   "description": "This app integrates with xMatters to retrieve information about events and users",
-  "type": "generic",
+  "type": "DevOps",
   "publisher": "Phantom",
   "main_module": "xmatters_connector.pyc",
     "app_version": "1.0.7",
@@ -175,7 +175,7 @@
           "example_values": [
             "0b34a572-52d7-4c2c-b6a8-af5a84365ee4"
           ],
-          "contains": ["xmatters person id"]
+          "contains": ["xmatters user id"]
         },
         {
           "data_path": "action_result.data.*.submitter.links.self",
@@ -531,7 +531,7 @@
           "example_values": [
             "0b34a572-52d7-4c2c-b6a8-af5a84365ee4"
           ],
-          "contains": ["xmatters person id"]
+          "contains": ["xmatters user id"]
         },
         {
           "data_path": "action_result.data.*.submitter.links.self",
@@ -838,15 +838,15 @@
       "read_only": true,
       "parameters": {
         "identifier": {
-          "description": "Either the Target Name or ID of the person",
+          "description": "Either the Target Name or ID of the user",
           "data_type": "string",
           "required": true,
           "order": 0,
-          "contains": ["xmatters target name", "xmatters person id"],
+          "contains": ["xmatters target name", "xmatters user id"],
           "primary": true
         },
         "embed_roles": {
-          "description": "Include a list of each persons's roles",
+          "description": "Include a list of each user's role",
           "data_type": "boolean",
           "order": 1,
           "required": false,
@@ -884,7 +884,7 @@
           "example_values": [
             "059c47aa-4951-46d7-bc68-073e73c900e6"
           ],
-          "contains": ["xmatters person id"],
+          "contains": ["xmatters user id"],
           "column_name": "ID",
           "column_order": 2
         },
@@ -1022,7 +1022,7 @@
           "example_values": [
             "059c47aa-4951-46d7-bc68-073e73c900e6"
           ],
-          "contains": ["xmatters target name", "xmatters person id"]
+          "contains": ["xmatters target name", "xmatters user id"]
         },
         {
           "data_path": "action_result.parameter.embed_roles",
@@ -1205,7 +1205,7 @@
           "primary": true
         },
         "embed_roles": {
-          "description": "Include a list of each persons's roles",
+          "description": "Include a list of each users's roles",
           "data_type": "boolean",
           "order": 1,
           "required": false,
@@ -1604,7 +1604,7 @@
           "example_values": [
             "0b34a572-52d7-4c2c-b6a8-af5a84365ee4"
           ],
-          "contains": ["xmatters person id"]
+          "contains": ["xmatters user id"]
         },
         {
           "data_path": "action_result.data.*.data.*.submitter.links.self",
