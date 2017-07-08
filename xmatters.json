@@ -1086,7 +1086,7 @@
           "description": "The priority of the event",
           "data_type": "string",
           "required": false,
-          "value_list": ["", "low", "medium", "high"],
+          "value_list": ["", "LOW", "MEDIUM", "HIGH"],
           "order": 4
         },
         "conferences": {
