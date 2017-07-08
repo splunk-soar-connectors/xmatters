@@ -1467,7 +1467,7 @@
     },
     {
       "action": "list events",
-      "description": "List events. You can query for specific events by providing a property name and property value",
+      "description": "Query for specific events by providing a property name and property value",
       "type": "generic",
       "identifier": "list_events",
       "read_only": true,
