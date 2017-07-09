@@ -47,7 +47,7 @@
   "actions": [
     {
       "action": "test connectivity",
-      "description": "This action runs a quick query on the server to check the connection and credentials",
+      "description": "Run a quick query on the server to check the connection and credentials",
       "type": "test",
       "identifier": "test_asset_connectivity",
       "read_only": true,
@@ -1467,7 +1467,7 @@
     },
     {
       "action": "list events",
-      "description": "Query for specific events by providing a property name and property value",
+      "description": "Query for specific events by providing a property name/value",
       "type": "generic",
       "identifier": "list_events",
       "read_only": true,
