@@ -307,8 +307,6 @@ class XMattersConnector(BaseConnector):
             return self.set_status_save_progress(phantom.APP_ERROR, "Connectivity test failed")
 
         self.save_progress('Making Request')
-        self.debug_print(headers)
-        self.debug_print(auth)
         # While there is a 'ping' endpoint, it will always return 200; it doesn't check auth at all
         ret_val, response_json = self._make_rest_call_helper(action_result, '/api/xm/1/events?limit=1', headers=headers, auth=auth)
 
