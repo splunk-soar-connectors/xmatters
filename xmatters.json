@@ -1,1777 +1,1869 @@
 {
-  "appid": "60E80285-8850-417A-9617-2423D6B9CA76",
-  "name": "xMatters",
-  "description": "This app integrates with xMatters to retrieve information about events and users",
-  "type": "DevOps",
-  "publisher": "Phantom",
-  "main_module": "xmatters_connector.pyc",
+    "appid": "60E80285-8850-417A-9617-2423D6B9CA76",
+    "name": "xMatters",
+    "description": "This app integrates with xMatters to retrieve information about events and users",
+    "type": "DevOps",
+    "publisher": "Phantom",
+    "main_module": "xmatters_connector.pyc",
     "app_version": "1.0.10",
     "utctime_updated": "2017-07-24T20:33:16.000000Z",
-  "package_name": "phantom_xmatters",
-  "product_vendor": "xMatters",
-  "product_name": "xMatters",
-  "product_version_regex": ".*",
-  "min_phantom_version": "2.1.452",
-  "logo": "xmatters.png",
-  "license": "Copyright (c) Phantom Cyber Corporation 2017",
-  "configuration": {
-    "base_url": {
-      "data_type": "string",
-      "description": "Base url, e.g. https://my-company.xmatters.com",
-      "order": 0,
-      "required": true
-    },
-    "ph": {
-      "data_type": "ph",
-      "order": 1
-    },
-    "username": {
-      "data_type": "string",
-      "description": "Username",
-      "order": 2,
-      "required": true
-    },
-    "password": {
-      "data_type": "password",
-      "description": "Password",
-      "order": 3,
-      "required": true
-    },
-    "client_id": {
-      "data_type": "string",
-      "description": "Client ID. OAuth will be preferred if provided",
-      "order": 4,
-      "required": false
-    }
-  },
-  "actions": [
-    {
-      "action": "test connectivity",
-      "description": "Run a quick query on the server to check the connection and credentials",
-      "type": "test",
-      "identifier": "test_asset_connectivity",
-      "read_only": true,
-      "parameters": {
-      },
-      "output": [],
-      "versions":"EQ(*)"
-    },
-    {
-      "action": "get event",
-      "description": "Get information about a single event",
-      "type": "generic",
-      "identifier": "get_event",
-      "read_only": true,
-      "parameters": {
-        "event_id": {
-          "description": "Event ID",
-          "data_type": "string",
-          "required": true,
-          "order": 0,
-          "contains": ["xmatters event id"],
-          "primary": true
-        },
-        "embed_recipients": {
-          "description": "Embed Recipients",
-          "data_type": "boolean",
-          "required": false,
-          "default": false,
-          "order": 1
-        },
-        "embed_response_options": {
-          "description": "Embed Response Options",
-          "data_type": "boolean",
-          "required": false,
-          "default": false,
-          "order": 2
-        },
-        "targeted": {
-          "description": "Return directly targeted recipients",
-          "data_type": "boolean",
-          "required": false,
-          "default": false,
-          "order": 3
-        }
-      },
-      "render": {
-        "width": 12,
-        "title": "Get Event",
-        "type": "table",
-        "height": 5
-      },
-      "output": [
-        {
-          "data_path": "action_result.data.*.incident",
-          "data_type": "string",
-          "example_values": [
-            "INCIDENT_ID-2094001"
-          ],
-          "column_name": "Incident",
-          "column_order": 0
-        },
-        {
-          "data_path": "action_result.data.*.eventId",
-          "data_type": "string",
-          "example_values": [
-            "2094001"
-          ],
-          "contains": ["xmatters event id"],
-          "column_name": "Event ID",
-          "column_order": "1"
-        },
-        {
-          "data_path": "action_result.data.*.status",
-          "data_type": "string",
-          "example_values": [
-            "TERMINATED"
-          ],
-          "column_name": "Status",
-          "column_order": 2
-        },
-        {
-          "data_path": "action_result.data.*.priority",
-          "data_type": "string",
-          "example_values": [
-            "LOW"
-          ],
-          "column_name": "Priority",
-          "column_order": 3
-        },
-        {
-          "data_path": "action_result.data.*.created",
-          "data_type": "string",
-          "example_values": [
-            "2017-06-12T18:55:21.291+0000"
-          ],
-          "column_name": "Created",
-          "column_order": 4
-        },
-        {
-          "data_path": "action_result.data.*.id",
-          "data_type": "string",
-          "example_values": [
-            "3f48d1f6-a897-4132-9272-f2bc945adb68"
-          ],
-          "contains": ["xmatters event id"]
-        },
-        {
-          "data_path": "action_result.data.*.form.id",
-          "data_type": "string",
-          "example_values": [
-            "507e9c83-472e-4510-9655-d6764574b322"
-          ],
-          "contains": ["xmatters form uuid"]
-        },
-        {
-          "data_path": "action_result.data.*.links.self",
-          "data_type": "string",
-          "example_values": [
-            "/api/xm/1/events/3f48d1f6-a897-4132-9272-f2bc945adb68"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.submitter.id",
-          "data_type": "string",
-          "example_values": [
-            "0b34a572-52d7-4c2c-b6a8-af5a84365ee4"
-          ],
-          "contains": ["xmatters user id"]
-        },
-        {
-          "data_path": "action_result.data.*.submitter.links.self",
-          "data_type": "string",
-          "example_values": [
-            "/api/xm/1/people/0b34a572-52d7-4c2c-b6a8-af5a84365ee4"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.submitter.targetName",
-          "data_type": "string", 
-          "contains": ["xmatters target name"],
-          "example_values": [
-            "herman"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.id",
-          "data_type": "string",
-          "example_values": [
-            "95d73d26-f83e-4678-9c21-6c6b2c5a18e1"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.site.id",
-          "data_type": "string",
-          "example_values": [
-            "98084ccd-5779-41d5-b76e-7a2c6e74b257"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.site.name",
-          "data_type": "string",
-          "example_values": [
-            "Default Site"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.site.links.self",
-          "data_type": "string",
-          "example_values": [
-            "/api/xm/1/sites/98084ccd-5779-41d5-b76e-7a2c6e74b257"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.links.self",
-          "data_type": "string",
-          "example_values": [
-            "/api/xm/1/people/95d73d26-f83e-4678-9c21-6c6b2c5a18e1"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.status",
-          "data_type": "string",
-          "example_values": [
-            "ACTIVE"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.language",
-          "data_type": "string",
-          "example_values": [
-            "en"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.lastName",
-          "data_type": "string",
-          "example_values": [
-            "Datem"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.targeted",
-          "data_type": "boolean",
-          "example_values": [
-            "True", "False"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.timezone",
-          "data_type": "string",
-          "example_values": [
-            "US/Eastern"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.webLogin",
-          "data_type": "string",
-          "example_values": [
-            "rFS77u2l"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.firstName",
-          "data_type": "string",
-          "example_values": [
-            "xChanning"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.targetName",
-          "data_type": "string",
-          "contains": ["xmatters target name"],
-          "example_values": [
-            "cdatem"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.recipientType",
-          "data_type": "string",
-          "example_values": [
-            "PERSON"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.externallyOwned",
-          "data_type": "boolean",
-          "example_values": [
-            "False", "True"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.count",
-          "data_type": "numeric",
-          "example_values": [
-            "2"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.links.self",
-          "data_type": "string",
-          "example_values": [
-            "/api/xm/1/events/3f48d1f6-a897-4132-9272-f2bc945adb68/recipients?targeted=true&offset=0&limit=100"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.total",
-          "data_type": "numeric",
-          "example_values": [
-            "2"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.terminated",
-          "data_type": "string",
-          "example_values": [
-            "2017-06-12T18:55:55.502+0000"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.bypassPhoneIntro",
-          "data_type": "boolean",
-          "example_values": [
-            "False", "True"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.escalationOverride",
-          "data_type": "boolean",
-          "example_values": [
-            "False", "True"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.expirationInMinutes",
-          "data_type": "numeric",
-          "example_values": [
-            "1440"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.requirePhonePassword",
-          "data_type": "boolean",
-          "example_values": [
-            "False", "True"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.notificationAuditCount",
-          "data_type": "numeric",
-          "example_values": [
-            "8"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.overrideDeviceRestrictions",
-          "data_type": "boolean",
-          "example_values": [
-            "False", "True"
-          ]
-        },
-        {
-          "data_path": "action_result.status",
-          "data_type": "string",
-          "example_values": [
-            "success"
-          ]
-        },
-        {
-          "data_path": "action_result.message",
-          "data_type": "string",
-          "example_values": [
-            ""
-          ]
-        },
-        {
-          "data_path": "action_result.summary",
-          "data_type": "string"
-        },
-        {
-          "data_path": "action_result.parameter.event_id",
-          "data_type": "string",
-          "example_values": [
-            "2094001"
-          ],
-          "contains": ["xmatters event id"]
-        },
-        {
-          "data_path": "action_result.parameter.targeted",
-          "data_type": "boolean",
-          "example_values": [
-            "True", "False"
-          ]
-        },
-        {
-          "data_path": "action_result.parameter.embed_recipients",
-          "data_type": "boolean",
-          "example_values": [
-            "True", "False"
-          ]
-        },
-        {
-          "data_path": "action_result.parameter.embed_response_options",
-          "data_type": "boolean",
-          "example_values": [
-            "True", "False"
-          ]
-        },
-        {
-          "data_path": "summary.total_objects",
-          "data_type": "numeric",
-          "example_values": [
-            "1"
-          ]
-        },
-        {
-          "data_path": "summary.total_objects_successful",
-          "data_type": "numeric",
-          "example_values": [
-            "1"
-          ]
-        }
-      ],
-      "versions":"EQ(*)"
-    },
-    {
-      "action": "update event",
-      "description": "Update the status of an event",
-      "type": "generic",
-      "identifier": "update_event",
-      "read_only": true,
-      "parameters": {
-        "event_id": {
-          "description": "Event ID",
-          "data_type": "string",
-          "required": true,
-          "contains": ["xmatters event id"],
-          "order": 0,
-          "primary": true
-        },
-        "status": {
-          "description": "Status of the event",
-          "data_type": "string",
-          "value_list": ["ACTIVE", "SUSPENDED", "TERMINATED"],
-          "required": true,
-          "order": 1
-        }
-      },
-      "render": {
-        "width": 12,
-        "title": "Update Event",
-        "type": "table",
-        "height": 5
-      },
-      "output": [
-        {
-          "data_path": "action_result.data.*.incident",
-          "data_type": "string",
-          "example_values": [
-            "INCIDENT_ID-2132003"
-          ],
-          "column_name": "Incident",
-          "column_order": 0
-        },
-        {
-          "data_path": "action_result.data.*.eventId",
-          "data_type": "string",
-          "example_values": [
-            "2132003"
-          ],
-          "contains": ["xmatters event id"],
-          "column_name": "Event ID",
-          "column_order": 1
-        },
-        {
-          "data_path": "action_result.data.*.status",
-          "data_type": "string",
-          "example_values": [
-            "SUSPENDED"
-          ],
-          "column_name": "Updated Status",
-          "column_order": 2
-        },
-        {
-          "data_path": "action_result.data.*.id",
-          "data_type": "string",
-          "example_values": [
-            "e2c792c3-c5d5-430d-a109-0fbae07807fe"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.form.id",
-          "data_type": "string",
-          "example_values": [
-            "507e9c83-472e-4510-9655-d6764574b322"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.links.self",
-          "data_type": "string",
-          "example_values": [
-            "/api/xm/1/events/e2c792c3-c5d5-430d-a109-0fbae07807fe"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.created",
-          "data_type": "string",
-          "example_values": [
-            "2017-06-12T20:49:46.860+0000"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.priority",
-          "data_type": "string",
-          "example_values": [
-            "MEDIUM"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.submitter.id",
-          "data_type": "string",
-          "example_values": [
-            "0b34a572-52d7-4c2c-b6a8-af5a84365ee4"
-          ],
-          "contains": ["xmatters user id"]
-        },
-        {
-          "data_path": "action_result.data.*.submitter.links.self",
-          "data_type": "string",
-          "example_values": [
-            "/api/xm/1/people/0b34a572-52d7-4c2c-b6a8-af5a84365ee4"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.submitter.targetName",
-          "data_type": "string",
-          "contains": ["xmatters target name"],
-          "example_values": [
-            "herman"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.id",
-          "data_type": "string",
-          "example_values": [
-            "059c47aa-4951-46d7-bc68-073e73c900e6"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.site.id",
-          "data_type": "string",
-          "example_values": [
-            "98084ccd-5779-41d5-b76e-7a2c6e74b257"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.site.name",
-          "data_type": "string",
-          "example_values": [
-            "Default Site"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.site.links.self",
-          "data_type": "string",
-          "example_values": [
-            "/api/xm/1/sites/98084ccd-5779-41d5-b76e-7a2c6e74b257"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.links.self",
-          "data_type": "string",
-          "example_values": [
-            "/api/xm/1/people/059c47aa-4951-46d7-bc68-073e73c900e6"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.status",
-          "data_type": "string",
-          "example_values": [
-            "ACTIVE"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.language",
-          "data_type": "string",
-          "example_values": [
-            "en"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.lastName",
-          "data_type": "string",
-          "example_values": [
-            "Afflac"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.targeted",
-          "data_type": "boolean",
-          "example_values": [
-            "True", "False"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.timezone",
-          "data_type": "string",
-          "example_values": [
-            "US/Eastern"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.webLogin",
-          "data_type": "string",
-          "example_values": [
-            "u1GJtIPc"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.firstName",
-          "data_type": "string",
-          "example_values": [
-            "xBen"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.targetName",
-          "data_type": "string",
-          "contains": ["xmatters target name"],
-          "example_values": [
-            "bafflac"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.recipientType",
-          "data_type": "string",
-          "example_values": [
-            "PERSON"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.data.*.externallyOwned",
-          "data_type": "boolean",
-          "example_values": [
-            "False", "True"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.count",
-          "data_type": "numeric",
-          "example_values": [
-            "1"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.links.self",
-          "data_type": "string",
-          "example_values": [
-            "/api/xm/1/events/e2c792c3-c5d5-430d-a109-0fbae07807fe/recipients?targeted=true&offset=0&limit=100"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipients.total",
-          "data_type": "numeric",
-          "example_values": [
-            "1"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.responseOptions.data.*.text",
-          "data_type": "string",
-          "example_values": [
-            "Acknowledge"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.responseOptions.data.*.action",
-          "data_type": "string",
-          "example_values": [
-            "END"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.responseOptions.data.*.number",
-          "data_type": "numeric",
-          "example_values": [
-            "1"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.responseOptions.data.*.prompt",
-          "data_type": "string",
-          "example_values": [
-            "Acknowledge to own this task"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.responseOptions.data.*.description",
-          "data_type": "string",
-          "example_values": [
-            "Acknowledge to own this task"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.responseOptions.data.*.contribution",
-          "data_type": "string",
-          "example_values": [
-            "POSITIVE"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.responseOptions.data.*.joinConference",
-          "data_type": "boolean",
-          "example_values": [
-            "False", "True"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.responseOptions.count",
-          "data_type": "numeric",
-          "example_values": [
-            "2"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.responseOptions.total",
-          "data_type": "numeric",
-          "example_values": [
-            "2"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.bypassPhoneIntro",
-          "data_type": "boolean",
-          "example_values": [
-            "False", "True"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.escalationOverride",
-          "data_type": "boolean",
-          "example_values": [
-            "False", "True"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.expirationInMinutes",
-          "data_type": "numeric",
-          "example_values": [
-            "1440"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.requirePhonePassword",
-          "data_type": "boolean",
-          "example_values": [
-            "False", "True"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.notificationAuditCount",
-          "data_type": "numeric",
-          "example_values": [
-            "4"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.overrideDeviceRestrictions",
-          "data_type": "boolean",
-          "example_values": [
-            "False", "True"
-          ]
-        },
-        {
-          "data_path": "action_result.status",
-          "data_type": "string",
-          "example_values": [
-            "success"
-          ]
-        },
-        {
-          "data_path": "action_result.message",
-          "data_type": "string",
-          "example_values": [
-            ""
-          ]
-        },
-        {
-          "data_path": "action_result.summary",
-          "data_type": "string"
-        },
-        {
-          "data_path": "action_result.parameter.status",
-          "data_type": "string",
-          "example_values": [
-            "SUSPENDED"
-          ]
-        },
-        {
-          "data_path": "action_result.parameter.event_id",
-          "data_type": "string",
-          "contains": ["xmatters event id"],
-          "example_values": [
-            "2132003"
-          ]
-        },
-        {
-          "data_path": "summary.total_objects",
-          "data_type": "numeric",
-          "example_values": [
-            "1"
-          ]
-        },
-        {
-          "data_path": "summary.total_objects_successful",
-          "data_type": "numeric",
-          "example_values": [
-            "1"
-          ]
-        }
-      ],
-      "versions":"EQ(*)"
-    },
-    {
-      "action": "get user",
-      "description": "Get information about a user",
-      "type": "generic",
-      "identifier": "get_person",
-      "read_only": true,
-      "parameters": {
-        "identifier": {
-          "description": "Either the Target Name or ID of the user",
-          "data_type": "string",
-          "required": true,
-          "order": 0,
-          "contains": ["xmatters target name", "xmatters user id"],
-          "primary": true
-        },
-        "embed_roles": {
-          "description": "Include a list of each user's role",
-          "data_type": "boolean",
-          "order": 1,
-          "required": false,
-          "default": false
-        }
-      },
-      "render": {
-        "width": 12,
-        "title": "Get Person",
-        "type": "table",
-        "height": 5
-      },
-      "output": [
-        {
-          "data_path": "action_result.data.*.lastName",
-          "data_type": "string",
-          "example_values": [
-            "Afflac"
-          ],
-          "column_name": "Last Name",
-          "column_order": 0
-        },
-        {
-          "data_path": "action_result.data.*.firstName",
-          "data_type": "string",
-          "example_values": [
-            "xBen"
-          ],
-          "column_name": "First Name",
-          "column_order": 1
-        },
-        {
-          "data_path": "action_result.data.*.id",
-          "data_type": "string",
-          "example_values": [
-            "059c47aa-4951-46d7-bc68-073e73c900e6"
-          ],
-          "contains": ["xmatters user id"],
-          "column_name": "ID",
-          "column_order": 2
-        },
-        {
-          "data_path": "action_result.data.*.targetName",
-          "data_type": "string",
-          "example_values": [
-            "bafflac"
-          ],
-          "contains": ["xmatters target name"],
-          "column_name": "Target Name",
-          "column_order": 3
-        },
-        {
-          "data_path": "action_result.data.*.status",
-          "data_type": "string",
-          "example_values": [
-            "ACTIVE"
-          ],
-          "column_name": "Status",
-          "column_order": 4
-        },
-        {
-          "data_path": "action_result.data.*.site.id",
-          "data_type": "string",
-          "example_values": [
-            "98084ccd-5779-41d5-b76e-7a2c6e74b257"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.site.name",
-          "data_type": "string",
-          "example_values": [
-            "Default Site"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.site.links.self",
-          "data_type": "string",
-          "example_values": [
-            "/api/xm/1/sites/98084ccd-5779-41d5-b76e-7a2c6e74b257"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.links.self",
-          "data_type": "string",
-          "example_values": [
-            "/api/xm/1/people/059c47aa-4951-46d7-bc68-073e73c900e6"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.roles.data.*.id",
-          "data_type": "string",
-          "example_values": [
-            "728a8b66-3e83-47d9-b233-5fe7774054ba"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.roles.data.*.name",
-          "data_type": "string",
-          "example_values": [
-            "Company Supervisor"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.roles.count",
-          "data_type": "numeric",
-          "example_values": [
-            "1"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.roles.total",
-          "data_type": "numeric",
-          "example_values": [
-            "1"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.language",
-          "data_type": "string",
-          "example_values": [
-            "en"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.timezone",
-          "data_type": "string",
-          "example_values": [
-            "US/Eastern"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.webLogin",
-          "data_type": "string",
-          "example_values": [
-            "u1GJtIPc"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.recipientType",
-          "data_type": "string",
-          "example_values": [
-            "PERSON"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.externallyOwned",
-          "data_type": "boolean",
-          "example_values": [
-            "False", "True"
-          ]
-        },
-        {
-          "data_path": "action_result.status",
-          "data_type": "string",
-          "example_values": [
-            "success"
-          ]
-        },
-        {
-          "data_path": "action_result.message",
-          "data_type": "string",
-          "example_values": [
-            ""
-          ]
-        },
-        {
-          "data_path": "action_result.summary",
-          "data_type": "string"
-        },
-        {
-          "data_path": "action_result.parameter.identifier",
-          "data_type": "string",
-          "example_values": [
-            "059c47aa-4951-46d7-bc68-073e73c900e6"
-          ],
-          "contains": ["xmatters target name", "xmatters user id"]
-        },
-        {
-          "data_path": "action_result.parameter.embed_roles",
-          "data_type": "boolean",
-          "example_values": [
-            "True", "False"
-          ]
-        },
-        {
-          "data_path": "summary.total_objects",
-          "data_type": "numeric",
-          "example_values": [
-            "1"
-          ]
-        },
-        {
-          "data_path": "summary.total_objects_successful",
-          "data_type": "numeric",
-          "example_values": [
-            "1"
-          ]
-        }
-      ],
-      "versions": "EQ(*)"
-    },
-    {
-      "action": "create event",
-      "description": "Create (trigger) an event in xMatters",
-      "verbose": "See <a href=\"https://help.xmatters.com/OnDemand/xmodwelcome/communicationplanbuilder/appendixrestapi.htm?cshid=apiPOSTtrigger#POSTtrigger\">this link</a> for more information on the parameters. The input expects the actual string literal representations of their respective fields. Lists need to be enclosed in square braces, objects in curly braces, etc.",
-      "type": "generic", 
-      "identifier": "initiate_event",
-      "read_only": true,
-      "parameters": {
-        "form_uuid": {
-          "description": "The Form UUID",
-          "data_type": "string",
-          "required": true,
-          "order": 0,
-          "contains": ["xmatters form uuid"]
-        },
-        "recipients": {
-          "description": "Comma seperated list of user names",
-          "data_type": "string",
-          "required": true,
-          "order": 1,
-          "primary": true
-        },
-        "properties": {
-          "description": "A JSON object of property names and values",
-          "data_type": "string",
-          "required": false,
-          "order": 2
-        },
-        "callbacks": {
-          "description": "The list of Event Update Callback Objects",
-          "data_type": "string",
-          "required": false,
-          "order": 3
-        },
-        "priority": {
-          "description": "The priority of the event",
-          "data_type": "string",
-          "required": false,
-          "value_list": ["", "LOW", "MEDIUM", "HIGH"],
-          "order": 4
-        },
-        "conferences": {
-          "description": "The list of conferences bridges",
-          "data_type": "string",
-          "required": false,
-          "order": 5
-        },
-        "responses": {
-          "description": "A list of response option UUIDs",
-          "data_type": "string",
-          "required": false,
-          "allow_list": false,
-          "order": 6
-        }
-      },
-      "render": {
-        "width": 12,
-        "title": "Initiate Event",
-        "type": "table",
-        "height": 5
-      },
-      "output": [
-        {
-          "data_path": "action_result.data.*.id",
-          "data_type": "string",
-          "example_values": [
-            "2132004"
-          ],
-          "contains": ["xmatters event id"],
-          "column_name": "New Event ID",
-          "column_order": 0
-        },
-        {
-          "data_path": "action_result.status",
-          "data_type": "string",
-          "example_values": [
-            "success"
-          ]
-        },
-        {
-          "data_path": "action_result.message",
-          "data_type": "string",
-          "example_values": [
-            ""
-          ]
-        },
-        {
-          "data_path": "action_result.summary",
-          "data_type": "string"
-        },
-        {
-          "data_path": "action_result.parameter.form_uuid",
-          "data_type": "string",
-          "example_values": [
-            "507e9c83-472e-4510-9655-d6764574b322"
-          ],
-          "contains": ["xmatters form uuid"]
-        },
-        {
-          "data_path": "action_result.parameter.recipients",
-          "data_type": "string",
-          "example_values": [
-            "[{\"targetName\": \"npoorman\"}]"
-          ]
-        },
-        {
-          "data_path": "action_result.parameter.properties",
-          "data_type": "string"
-        },
-        {
-          "data_path": "action_result.parameter.callbacks",
-          "data_type": "string"
-        },
-        {
-          "data_path": "action_result.parameter.priority",
-          "data_type": "string"
-        },
-        {
-          "data_path": "action_result.parameter.conferences",
-          "data_type": "string"
-        },
-        {
-          "data_path": "action_result.parameter.responses",
-          "data_type": "string"
-        },
-        {
-          "data_path": "summary.total_objects",
-          "data_type": "numeric",
-          "example_values": [
-            "1"
-          ]
-        },
-        {
-          "data_path": "summary.total_objects_successful",
-          "data_type": "numeric",
-          "example_values": [
-            "1"
-          ]
-        }
-      ],
-      "versions": "EQ(*)"
-    },
-    {
-      "action": "list users",
-      "description": "Get information about multiple users matching a property name/value",
-      "type": "generic",
-      "identifier": "list_people",
-      "read_only": true,
-      "parameters": {
-        "search": {
-          "description": "Search term. Will check first name, last name, weblogin, etc. Seperate values with either a space or a + sign",
-          "data_type": "string",
-          "required": false, 
-          "order": 0,
-          "primary": true
-        },
-        "embed_roles": {
-          "description": "Include a list of each users's roles",
-          "data_type": "boolean",
-          "order": 1,
-          "required": false,
-          "default": false
-        },
-        "property_name": {
-          "description": "Comma seperated list of property names",
-          "data_type": "string",
-          "required": false,
-          "order": 2,
-          "allow_list": false
-        },
-        "property_value": {
-          "description": "Comma seperated list of property values",
-          "data_type": "string",
-          "required": false,
-          "order": 3,
-          "allow_list": false
-        },
-        "offset": {
-          "description": "Number of items to skip before returning results",
-          "data_type": "numeric",
-          "required": false,
-          "order": 4
-        },
-        "limit": {
-          "description": "The number of items to return",
-          "data_type": "numeric",
-          "required": false,
-          "order": 5
-        },
-        "page_uri": {
-          "description": "URI For the page",
-          "data_type": "string",
-          "required": false,
-          "order": 6
-        }
-      },
-      "render": {
-        "width": 12,
-        "title": "List People",
-        "type": "table",
-        "height": 5
-      },
-      "output": [
-        {
-          "data_path": "action_result.data.*.data.*.lastName",
-          "data_type": "string",
-          "example_values": [
-            "Afflac"
-          ],
-          "column_name": "Last Name",
-          "column_order": 0
-        },
-        {
-          "data_path": "action_result.data.*.data.*.firstName",
-          "data_type": "string",
-          "example_values": [
-            "xBen"
-          ],
-          "column_name": "First Name",
-          "column_order": 1
-        },
-        {
-          "data_path": "action_result.data.*.data.*.id",
-          "data_type": "string",
-          "example_values": [
-            "059c47aa-4951-46d7-bc68-073e73c900e6"
-          ],
-          "column_name": "ID",
-          "column_order": 2
-        },
-        {
-          "data_path": "action_result.data.*.data.*.targetName",
-          "data_type": "string",
-          "example_values": [
-            "bafflac"
-          ],
-          "contains": ["xmatters target name"],
-          "column_name": "Target Name",
-          "column_order": 3
-        },
-        {
-          "data_path": "action_result.data.*.data.*.status",
-          "data_type": "string",
-          "example_values": [
-            "ACTIVE"
-          ],
-          "column_name": "Status",
-          "column_order": 4
-        },
-        {
-          "data_path": "action_result.data.*.data.*.site.id",
-          "data_type": "string",
-          "example_values": [
-            "98084ccd-5779-41d5-b76e-7a2c6e74b257"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.data.*.site.name",
-          "data_type": "string",
-          "example_values": [
-            "Default Site"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.data.*.site.links.self",
-          "data_type": "string",
-          "example_values": [
-            "/api/xm/1/sites/98084ccd-5779-41d5-b76e-7a2c6e74b257"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.data.*.links.self",
-          "data_type": "string",
-          "example_values": [
-            "/api/xm/1/people/059c47aa-4951-46d7-bc68-073e73c900e6"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.data.*.language",
-          "data_type": "string",
-          "example_values": [
-            "en"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.data.*.timezone",
-          "data_type": "string",
-          "example_values": [
-            "US/Eastern"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.data.*.webLogin",
-          "data_type": "string",
-          "example_values": [
-            "u1GJtIPc"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.data.*.recipientType",
-          "data_type": "string",
-          "example_values": [
-            "PERSON"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.data.*.externallyOwned",
-          "data_type": "boolean",
-          "example_values": [
-            "False", "True"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.count",
-          "data_type": "numeric",
-          "example_values": [
-            "2"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.links.self",
-          "data_type": "string",
-          "example_values": [
-            "/api/xm/1/people?search=Ben+Natalie&offset=0&limit=4"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.total",
-          "data_type": "numeric",
-          "example_values": [
-            "2"
-          ]
-        },
-        {
-          "data_path": "action_result.status",
-          "data_type": "string",
-          "example_values": [
-            "success"
-          ]
-        },
-        {
-          "data_path": "action_result.message",
-          "data_type": "string",
-          "example_values": [
-            ""
-          ]
-        },
-        {
-          "data_path": "action_result.summary",
-          "data_type": "string"
-        },
-        {
-          "data_path": "action_result.parameter.limit",
-          "data_type": "string",
-          "example_values": [
-            "10"
-          ]
-        },
-        {
-          "data_path": "action_result.parameter.offset",
-          "data_type": "string",
-          "example_values": [
-            "10"
-          ]
-        },
-        {
-          "data_path": "action_result.parameter.search",
-          "data_type": "string",
-          "example_values": [
-            "Ben"
-          ]
-        },
-        {
-          "data_path": "action_result.parameter.page_uri",
-          "data_type": "string",
-          "example_values": [
-            "/api/xm/1/people?search=Ben+Natalie&offset=0&limit=4"
-          ]
-        },
-        {
-          "data_path": "action_result.parameter.embed_roles",
-          "data_type": "boolean",
-          "example_values": [
-            "True", "False"
-          ]
-        },
-        {
-          "data_path": "action_result.parameter.property_name",
-          "data_type": "string",
-          "example_values": [
-            "Aa"
-          ]
-        },
-        {
-          "data_path": "action_result.parameter.property_value",
-          "data_type": "string",
-          "example_values": [
-            "aa"
-          ]
-        },
-        {
-          "data_path": "summary.total_objects",
-          "data_type": "numeric",
-          "example_values": [
-            "1"
-          ]
-        },
-        {
-          "data_path": "summary.total_objects_successful",
-          "data_type": "numeric",
-          "example_values": [
-            "1"
-          ]
-        }
-      ],
-      "versions":"EQ(*)"
-    },
-    {
-      "action": "list events",
-      "description": "Query for specific events by providing a property name/value",
-      "type": "generic",
-      "identifier": "list_events",
-      "read_only": true,
-      "parameters": {
-        "property_name": {
-          "description": "Comma seperated list of property names",
-          "data_type": "string",
-          "required": false,
-          "order": 0,
-          "allow_list": false,
-          "primary": true
-        },
-        "property_value": {
-          "description": "Comma seperated list of property values",
-          "data_type": "string",
-          "required": false,
-          "order": 1,
-          "allow_list": false,
-          "primary": true
-        },
-        "offset": {
-          "description": "Number of items to skip before returning results",
-          "data_type": "numeric",
-          "required": false,
-          "order": 2
-        },
-        "limit": {
-          "description": "The number of items to return",
-          "data_type": "numeric",
-          "required": false,
-          "order": 3
-        },
-        "status": {
-          "description": "Status of the event",
-          "data_type": "string",
-          "value_list": ["", "ACTIVE", "SUSPENDED", "TERMINATED"],
-          "required": false,
-          "order": 4
+    "package_name": "phantom_xmatters",
+    "product_vendor": "xMatters",
+    "product_name": "xMatters",
+    "product_version_regex": ".*",
+    "min_phantom_version": "2.1.452",
+    "logo": "logo_xmatters.svg",
+    "logo_dark": "logo_xmatters_dark.svg",
+    "license": "Copyright (c) Phantom Cyber Corporation 2017",
+    "configuration": {
+        "base_url": {
+            "data_type": "string",
+            "description": "Base url, e.g. https://my-company.xmatters.com",
+            "order": 0,
+            "required": true
         },
         "ph": {
-          "data_type": "ph",
-          "order": 5
+            "data_type": "ph",
+            "order": 1
         },
-        "from": {
-          "description": "A date in UTC Format for the start of a time range to search",
-          "data_type": "string",
-          "required": false,
-          "order": 6
+        "username": {
+            "data_type": "string",
+            "description": "Username",
+            "order": 2,
+            "required": true
         },
-        "to": {
-          "description": "A date in UTC Format for the end of a time range to search",
-          "data_type": "string",
-          "required": false,
-          "order": 7
+        "password": {
+            "data_type": "password",
+            "description": "Password",
+            "order": 3,
+            "required": true
         },
-        "page_uri": {
-          "description": "URI For the page",
-          "data_type": "string",
-          "required": false,
-          "order": 8
+        "client_id": {
+            "data_type": "string",
+            "description": "Client ID. OAuth will be preferred if provided",
+            "order": 4,
+            "required": false
         }
-      },
-      "render": {
-        "width": 12,
-        "title": "List Events",
-        "type": "table",
-        "height": 5
-      },
-      "output": [
+    },
+    "actions": [
         {
-          "data_path": "action_result.data.*.data.*.incident",
-          "data_type": "string",
-          "example_values": [
-            "INCIDENT_ID-2094001"
-          ],
-          "column_name": "Incident",
-          "column_order": 0
+            "action": "test connectivity",
+            "description": "Run a quick query on the server to check the connection and credentials",
+            "type": "test",
+            "identifier": "test_asset_connectivity",
+            "read_only": true,
+            "parameters": {},
+            "output": [],
+            "versions": "EQ(*)"
         },
         {
-          "data_path": "action_result.data.*.data.*.eventId",
-          "data_type": "string",
-          "example_values": [
-            "2094001"
+            "action": "get event",
+            "description": "Get information about a single event",
+            "type": "generic",
+            "identifier": "get_event",
+            "read_only": true,
+            "parameters": {
+                "event_id": {
+                    "description": "Event ID",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 0,
+                    "contains": [
+                        "xmatters event id"
+                    ],
+                    "primary": true
+                },
+                "embed_recipients": {
+                    "description": "Embed Recipients",
+                    "data_type": "boolean",
+                    "required": false,
+                    "default": false,
+                    "order": 1
+                },
+                "embed_response_options": {
+                    "description": "Embed Response Options",
+                    "data_type": "boolean",
+                    "required": false,
+                    "default": false,
+                    "order": 2
+                },
+                "targeted": {
+                    "description": "Return directly targeted recipients",
+                    "data_type": "boolean",
+                    "required": false,
+                    "default": false,
+                    "order": 3
+                }
+            },
+            "render": {
+                "width": 12,
+                "title": "Get Event",
+                "type": "table",
+                "height": 5
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.embed_recipients",
+                    "data_type": "boolean",
+                    "example_values": [
+                        "True",
+                        "False"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.embed_response_options",
+                    "data_type": "boolean",
+                    "example_values": [
+                        "True",
+                        "False"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.event_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "2094001"
+                    ],
+                    "contains": [
+                        "xmatters event id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.targeted",
+                    "data_type": "boolean",
+                    "example_values": [
+                        "True",
+                        "False"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.bypassPhoneIntro",
+                    "data_type": "boolean",
+                    "example_values": [
+                        "False",
+                        "True"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.created",
+                    "data_type": "string",
+                    "example_values": [
+                        "2017-06-12T18:55:21.291+0000"
+                    ],
+                    "column_name": "Created",
+                    "column_order": 4
+                },
+                {
+                    "data_path": "action_result.data.*.escalationOverride",
+                    "data_type": "boolean",
+                    "example_values": [
+                        "False",
+                        "True"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.eventId",
+                    "data_type": "string",
+                    "example_values": [
+                        "2094001"
+                    ],
+                    "contains": [
+                        "xmatters event id"
+                    ],
+                    "column_name": "Event ID",
+                    "column_order": "1"
+                },
+                {
+                    "data_path": "action_result.data.*.expirationInMinutes",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "1440"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.form.id",
+                    "data_type": "string",
+                    "example_values": [
+                        "507e9c83-472e-4510-9655-d6764574b322"
+                    ],
+                    "contains": [
+                        "xmatters form uuid"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.id",
+                    "data_type": "string",
+                    "example_values": [
+                        "3f48d1f6-a897-4132-9272-f2bc945adb68"
+                    ],
+                    "contains": [
+                        "xmatters event id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.incident",
+                    "data_type": "string",
+                    "example_values": [
+                        "INCIDENT_ID-2094001"
+                    ],
+                    "column_name": "Incident",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data.*.links.self",
+                    "data_type": "string",
+                    "example_values": [
+                        "/api/xm/1/events/3f48d1f6-a897-4132-9272-f2bc945adb68"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.notificationAuditCount",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "8"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.overrideDeviceRestrictions",
+                    "data_type": "boolean",
+                    "example_values": [
+                        "False",
+                        "True"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.priority",
+                    "data_type": "string",
+                    "example_values": [
+                        "LOW"
+                    ],
+                    "column_name": "Priority",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.count",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "2"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.externallyOwned",
+                    "data_type": "boolean",
+                    "example_values": [
+                        "False",
+                        "True"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.firstName",
+                    "data_type": "string",
+                    "example_values": [
+                        "xChanning"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.id",
+                    "data_type": "string",
+                    "example_values": [
+                        "95d73d26-f83e-4678-9c21-6c6b2c5a18e1"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.language",
+                    "data_type": "string",
+                    "example_values": [
+                        "en"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.lastName",
+                    "data_type": "string",
+                    "example_values": [
+                        "Datem"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.links.self",
+                    "data_type": "string",
+                    "example_values": [
+                        "/api/xm/1/people/95d73d26-f83e-4678-9c21-6c6b2c5a18e1"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.recipientType",
+                    "data_type": "string",
+                    "example_values": [
+                        "PERSON"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.site.id",
+                    "data_type": "string",
+                    "example_values": [
+                        "98084ccd-5779-41d5-b76e-7a2c6e74b257"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.site.links.self",
+                    "data_type": "string",
+                    "example_values": [
+                        "/api/xm/1/sites/98084ccd-5779-41d5-b76e-7a2c6e74b257"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.site.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "Default Site"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "ACTIVE"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.targetName",
+                    "data_type": "string",
+                    "contains": [
+                        "xmatters target name"
+                    ],
+                    "example_values": [
+                        "cdatem"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.targeted",
+                    "data_type": "boolean",
+                    "example_values": [
+                        "True",
+                        "False"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.timezone",
+                    "data_type": "string",
+                    "example_values": [
+                        "US/Eastern"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.webLogin",
+                    "data_type": "string",
+                    "example_values": [
+                        "rFS77u2l"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.links.self",
+                    "data_type": "string",
+                    "example_values": [
+                        "/api/xm/1/events/3f48d1f6-a897-4132-9272-f2bc945adb68/recipients?targeted=true&offset=0&limit=100"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.total",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "2"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.requirePhonePassword",
+                    "data_type": "boolean",
+                    "example_values": [
+                        "False",
+                        "True"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "TERMINATED"
+                    ],
+                    "column_name": "Status",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.submitter.id",
+                    "data_type": "string",
+                    "example_values": [
+                        "0b34a572-52d7-4c2c-b6a8-af5a84365ee4"
+                    ],
+                    "contains": [
+                        "xmatters user id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.submitter.links.self",
+                    "data_type": "string",
+                    "example_values": [
+                        "/api/xm/1/people/0b34a572-52d7-4c2c-b6a8-af5a84365ee4"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.submitter.targetName",
+                    "data_type": "string",
+                    "contains": [
+                        "xmatters target name"
+                    ],
+                    "example_values": [
+                        "herman"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.terminated",
+                    "data_type": "string",
+                    "example_values": [
+                        "2017-06-12T18:55:55.502+0000"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        ""
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "1"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "1"
+                    ]
+                }
             ],
-            "contains": ["xmatters event id"],
-            "column_name": "Event ID",
-            "column_order": 1
+            "versions": "EQ(*)"
         },
         {
-          "data_path": "action_result.data.*.data.*.status",
-          "data_type": "string",
-          "example_values": [
-            "TERMINATED"
+            "action": "update event",
+            "description": "Update the status of an event",
+            "type": "generic",
+            "identifier": "update_event",
+            "read_only": true,
+            "parameters": {
+                "event_id": {
+                    "description": "Event ID",
+                    "data_type": "string",
+                    "required": true,
+                    "contains": [
+                        "xmatters event id"
+                    ],
+                    "order": 0,
+                    "primary": true
+                },
+                "status": {
+                    "description": "Status of the event",
+                    "data_type": "string",
+                    "value_list": [
+                        "ACTIVE",
+                        "SUSPENDED",
+                        "TERMINATED"
+                    ],
+                    "required": true,
+                    "order": 1
+                }
+            },
+            "render": {
+                "width": 12,
+                "title": "Update Event",
+                "type": "table",
+                "height": 5
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.event_id",
+                    "data_type": "string",
+                    "contains": [
+                        "xmatters event id"
+                    ],
+                    "example_values": [
+                        "2132003"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "SUSPENDED"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.bypassPhoneIntro",
+                    "data_type": "boolean",
+                    "example_values": [
+                        "False",
+                        "True"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.created",
+                    "data_type": "string",
+                    "example_values": [
+                        "2017-06-12T20:49:46.860+0000"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.escalationOverride",
+                    "data_type": "boolean",
+                    "example_values": [
+                        "False",
+                        "True"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.eventId",
+                    "data_type": "string",
+                    "example_values": [
+                        "2132003"
+                    ],
+                    "contains": [
+                        "xmatters event id"
+                    ],
+                    "column_name": "Event ID",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.data.*.expirationInMinutes",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "1440"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.form.id",
+                    "data_type": "string",
+                    "example_values": [
+                        "507e9c83-472e-4510-9655-d6764574b322"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.id",
+                    "data_type": "string",
+                    "example_values": [
+                        "e2c792c3-c5d5-430d-a109-0fbae07807fe"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.incident",
+                    "data_type": "string",
+                    "example_values": [
+                        "INCIDENT_ID-2132003"
+                    ],
+                    "column_name": "Incident",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data.*.links.self",
+                    "data_type": "string",
+                    "example_values": [
+                        "/api/xm/1/events/e2c792c3-c5d5-430d-a109-0fbae07807fe"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.notificationAuditCount",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "4"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.overrideDeviceRestrictions",
+                    "data_type": "boolean",
+                    "example_values": [
+                        "False",
+                        "True"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.priority",
+                    "data_type": "string",
+                    "example_values": [
+                        "MEDIUM"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.count",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "1"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.externallyOwned",
+                    "data_type": "boolean",
+                    "example_values": [
+                        "False",
+                        "True"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.firstName",
+                    "data_type": "string",
+                    "example_values": [
+                        "xBen"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.id",
+                    "data_type": "string",
+                    "example_values": [
+                        "059c47aa-4951-46d7-bc68-073e73c900e6"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.language",
+                    "data_type": "string",
+                    "example_values": [
+                        "en"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.lastName",
+                    "data_type": "string",
+                    "example_values": [
+                        "Afflac"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.links.self",
+                    "data_type": "string",
+                    "example_values": [
+                        "/api/xm/1/people/059c47aa-4951-46d7-bc68-073e73c900e6"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.recipientType",
+                    "data_type": "string",
+                    "example_values": [
+                        "PERSON"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.site.id",
+                    "data_type": "string",
+                    "example_values": [
+                        "98084ccd-5779-41d5-b76e-7a2c6e74b257"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.site.links.self",
+                    "data_type": "string",
+                    "example_values": [
+                        "/api/xm/1/sites/98084ccd-5779-41d5-b76e-7a2c6e74b257"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.site.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "Default Site"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "ACTIVE"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.targetName",
+                    "data_type": "string",
+                    "contains": [
+                        "xmatters target name"
+                    ],
+                    "example_values": [
+                        "bafflac"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.targeted",
+                    "data_type": "boolean",
+                    "example_values": [
+                        "True",
+                        "False"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.timezone",
+                    "data_type": "string",
+                    "example_values": [
+                        "US/Eastern"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.data.*.webLogin",
+                    "data_type": "string",
+                    "example_values": [
+                        "u1GJtIPc"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.links.self",
+                    "data_type": "string",
+                    "example_values": [
+                        "/api/xm/1/events/e2c792c3-c5d5-430d-a109-0fbae07807fe/recipients?targeted=true&offset=0&limit=100"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipients.total",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "1"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.requirePhonePassword",
+                    "data_type": "boolean",
+                    "example_values": [
+                        "False",
+                        "True"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.responseOptions.count",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "2"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.responseOptions.data.*.action",
+                    "data_type": "string",
+                    "example_values": [
+                        "END"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.responseOptions.data.*.contribution",
+                    "data_type": "string",
+                    "example_values": [
+                        "POSITIVE"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.responseOptions.data.*.description",
+                    "data_type": "string",
+                    "example_values": [
+                        "Acknowledge to own this task"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.responseOptions.data.*.joinConference",
+                    "data_type": "boolean",
+                    "example_values": [
+                        "False",
+                        "True"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.responseOptions.data.*.number",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "1"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.responseOptions.data.*.prompt",
+                    "data_type": "string",
+                    "example_values": [
+                        "Acknowledge to own this task"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.responseOptions.data.*.text",
+                    "data_type": "string",
+                    "example_values": [
+                        "Acknowledge"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.responseOptions.total",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "2"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "SUSPENDED"
+                    ],
+                    "column_name": "Updated Status",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.submitter.id",
+                    "data_type": "string",
+                    "example_values": [
+                        "0b34a572-52d7-4c2c-b6a8-af5a84365ee4"
+                    ],
+                    "contains": [
+                        "xmatters user id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.submitter.links.self",
+                    "data_type": "string",
+                    "example_values": [
+                        "/api/xm/1/people/0b34a572-52d7-4c2c-b6a8-af5a84365ee4"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.submitter.targetName",
+                    "data_type": "string",
+                    "contains": [
+                        "xmatters target name"
+                    ],
+                    "example_values": [
+                        "herman"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        ""
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "1"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "1"
+                    ]
+                }
             ],
-            "column_name": "Status",
-            "column_order": 2
+            "versions": "EQ(*)"
         },
         {
-          "data_path": "action_result.data.*.data.*.priority",
-          "data_type": "string",
-          "example_values": [
-            "LOW"
+            "action": "get user",
+            "description": "Get information about a user",
+            "type": "generic",
+            "identifier": "get_person",
+            "read_only": true,
+            "parameters": {
+                "identifier": {
+                    "description": "Either the Target Name or ID of the user",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 0,
+                    "contains": [
+                        "xmatters target name",
+                        "xmatters user id"
+                    ],
+                    "primary": true
+                },
+                "embed_roles": {
+                    "description": "Include a list of each user's role",
+                    "data_type": "boolean",
+                    "order": 1,
+                    "required": false,
+                    "default": false
+                }
+            },
+            "render": {
+                "width": 12,
+                "title": "Get Person",
+                "type": "table",
+                "height": 5
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.embed_roles",
+                    "data_type": "boolean",
+                    "example_values": [
+                        "True",
+                        "False"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.identifier",
+                    "data_type": "string",
+                    "example_values": [
+                        "059c47aa-4951-46d7-bc68-073e73c900e6"
+                    ],
+                    "contains": [
+                        "xmatters target name",
+                        "xmatters user id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.externallyOwned",
+                    "data_type": "boolean",
+                    "example_values": [
+                        "False",
+                        "True"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.firstName",
+                    "data_type": "string",
+                    "example_values": [
+                        "xBen"
+                    ],
+                    "column_name": "First Name",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.data.*.id",
+                    "data_type": "string",
+                    "example_values": [
+                        "059c47aa-4951-46d7-bc68-073e73c900e6"
+                    ],
+                    "contains": [
+                        "xmatters user id"
+                    ],
+                    "column_name": "ID",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.language",
+                    "data_type": "string",
+                    "example_values": [
+                        "en"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.lastName",
+                    "data_type": "string",
+                    "example_values": [
+                        "Afflac"
+                    ],
+                    "column_name": "Last Name",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data.*.links.self",
+                    "data_type": "string",
+                    "example_values": [
+                        "/api/xm/1/people/059c47aa-4951-46d7-bc68-073e73c900e6"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipientType",
+                    "data_type": "string",
+                    "example_values": [
+                        "PERSON"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.roles.count",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "1"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.roles.data.*.id",
+                    "data_type": "string",
+                    "example_values": [
+                        "728a8b66-3e83-47d9-b233-5fe7774054ba"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.roles.data.*.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "Company Supervisor"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.roles.total",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "1"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.site.id",
+                    "data_type": "string",
+                    "example_values": [
+                        "98084ccd-5779-41d5-b76e-7a2c6e74b257"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.site.links.self",
+                    "data_type": "string",
+                    "example_values": [
+                        "/api/xm/1/sites/98084ccd-5779-41d5-b76e-7a2c6e74b257"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.site.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "Default Site"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "ACTIVE"
+                    ],
+                    "column_name": "Status",
+                    "column_order": 4
+                },
+                {
+                    "data_path": "action_result.data.*.targetName",
+                    "data_type": "string",
+                    "example_values": [
+                        "bafflac"
+                    ],
+                    "contains": [
+                        "xmatters target name"
+                    ],
+                    "column_name": "Target Name",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.data.*.timezone",
+                    "data_type": "string",
+                    "example_values": [
+                        "US/Eastern"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.webLogin",
+                    "data_type": "string",
+                    "example_values": [
+                        "u1GJtIPc"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        ""
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "1"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "1"
+                    ]
+                }
             ],
-            "column_name": "Priority",
-            "column_order": 3
+            "versions": "EQ(*)"
         },
         {
-          "data_path": "action_result.data.*.data.*.created",
-          "data_type": "string",
-          "example_values": [
-            "2017-06-12T18:55:21.291+0000"
+            "action": "create event",
+            "description": "Create (trigger) an event in xMatters",
+            "verbose": "See <a href=\"https://help.xmatters.com/OnDemand/xmodwelcome/communicationplanbuilder/appendixrestapi.htm?cshid=apiPOSTtrigger#POSTtrigger\">this link</a> for more information on the parameters. The input expects the actual string literal representations of their respective fields. Lists need to be enclosed in square braces, objects in curly braces, etc.",
+            "type": "generic",
+            "identifier": "initiate_event",
+            "read_only": true,
+            "parameters": {
+                "form_uuid": {
+                    "description": "The Form UUID",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 0,
+                    "contains": [
+                        "xmatters form uuid"
+                    ]
+                },
+                "recipients": {
+                    "description": "Comma seperated list of user names",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 1,
+                    "primary": true
+                },
+                "properties": {
+                    "description": "A JSON object of property names and values",
+                    "data_type": "string",
+                    "required": false,
+                    "order": 2
+                },
+                "callbacks": {
+                    "description": "The list of Event Update Callback Objects",
+                    "data_type": "string",
+                    "required": false,
+                    "order": 3
+                },
+                "priority": {
+                    "description": "The priority of the event",
+                    "data_type": "string",
+                    "required": false,
+                    "value_list": [
+                        "",
+                        "LOW",
+                        "MEDIUM",
+                        "HIGH"
+                    ],
+                    "order": 4
+                },
+                "conferences": {
+                    "description": "The list of conferences bridges",
+                    "data_type": "string",
+                    "required": false,
+                    "order": 5
+                },
+                "responses": {
+                    "description": "A list of response option UUIDs",
+                    "data_type": "string",
+                    "required": false,
+                    "allow_list": false,
+                    "order": 6
+                }
+            },
+            "render": {
+                "width": 12,
+                "title": "Initiate Event",
+                "type": "table",
+                "height": 5
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.callbacks",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.conferences",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.form_uuid",
+                    "data_type": "string",
+                    "example_values": [
+                        "507e9c83-472e-4510-9655-d6764574b322"
+                    ],
+                    "contains": [
+                        "xmatters form uuid"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.priority",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.properties",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.recipients",
+                    "data_type": "string",
+                    "example_values": [
+                        "[{\"targetName\": \"npoorman\"}]"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.responses",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.id",
+                    "data_type": "string",
+                    "example_values": [
+                        "2132004"
+                    ],
+                    "contains": [
+                        "xmatters event id"
+                    ],
+                    "column_name": "New Event ID",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        ""
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "1"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "1"
+                    ]
+                }
             ],
-            "column_name": "Created",
-            "column_order": 4
+            "versions": "EQ(*)"
         },
         {
-          "data_path": "action_result.data.*.data.*.id",
-          "data_type": "string",
-          "example_values": [
-            "3f48d1f6-a897-4132-9272-f2bc945adb68"
+            "action": "list users",
+            "description": "Get information about multiple users matching a property name/value",
+            "type": "generic",
+            "identifier": "list_people",
+            "read_only": true,
+            "parameters": {
+                "search": {
+                    "description": "Search term. Will check first name, last name, weblogin, etc. Seperate values with either a space or a + sign",
+                    "data_type": "string",
+                    "required": false,
+                    "order": 0,
+                    "primary": true
+                },
+                "embed_roles": {
+                    "description": "Include a list of each users's roles",
+                    "data_type": "boolean",
+                    "order": 1,
+                    "required": false,
+                    "default": false
+                },
+                "property_name": {
+                    "description": "Comma seperated list of property names",
+                    "data_type": "string",
+                    "required": false,
+                    "order": 2,
+                    "allow_list": false
+                },
+                "property_value": {
+                    "description": "Comma seperated list of property values",
+                    "data_type": "string",
+                    "required": false,
+                    "order": 3,
+                    "allow_list": false
+                },
+                "offset": {
+                    "description": "Number of items to skip before returning results",
+                    "data_type": "numeric",
+                    "required": false,
+                    "order": 4
+                },
+                "limit": {
+                    "description": "The number of items to return",
+                    "data_type": "numeric",
+                    "required": false,
+                    "order": 5
+                },
+                "page_uri": {
+                    "description": "URI For the page",
+                    "data_type": "string",
+                    "required": false,
+                    "order": 6
+                }
+            },
+            "render": {
+                "width": 12,
+                "title": "List People",
+                "type": "table",
+                "height": 5
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.embed_roles",
+                    "data_type": "boolean",
+                    "example_values": [
+                        "True",
+                        "False"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.limit",
+                    "data_type": "string",
+                    "example_values": [
+                        "10"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.offset",
+                    "data_type": "string",
+                    "example_values": [
+                        "10"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.page_uri",
+                    "data_type": "string",
+                    "example_values": [
+                        "/api/xm/1/people?search=Ben+Natalie&offset=0&limit=4"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.property_name",
+                    "data_type": "string",
+                    "example_values": [
+                        "Aa"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.property_value",
+                    "data_type": "string",
+                    "example_values": [
+                        "aa"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.search",
+                    "data_type": "string",
+                    "example_values": [
+                        "Ben"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.count",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "2"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.externallyOwned",
+                    "data_type": "boolean",
+                    "example_values": [
+                        "False",
+                        "True"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.firstName",
+                    "data_type": "string",
+                    "example_values": [
+                        "xBen"
+                    ],
+                    "column_name": "First Name",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.id",
+                    "data_type": "string",
+                    "example_values": [
+                        "059c47aa-4951-46d7-bc68-073e73c900e6"
+                    ],
+                    "column_name": "ID",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.language",
+                    "data_type": "string",
+                    "example_values": [
+                        "en"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.lastName",
+                    "data_type": "string",
+                    "example_values": [
+                        "Afflac"
+                    ],
+                    "column_name": "Last Name",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.links.self",
+                    "data_type": "string",
+                    "example_values": [
+                        "/api/xm/1/people/059c47aa-4951-46d7-bc68-073e73c900e6"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.recipientType",
+                    "data_type": "string",
+                    "example_values": [
+                        "PERSON"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.site.id",
+                    "data_type": "string",
+                    "example_values": [
+                        "98084ccd-5779-41d5-b76e-7a2c6e74b257"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.site.links.self",
+                    "data_type": "string",
+                    "example_values": [
+                        "/api/xm/1/sites/98084ccd-5779-41d5-b76e-7a2c6e74b257"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.site.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "Default Site"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "ACTIVE"
+                    ],
+                    "column_name": "Status",
+                    "column_order": 4
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.targetName",
+                    "data_type": "string",
+                    "example_values": [
+                        "bafflac"
+                    ],
+                    "contains": [
+                        "xmatters target name"
+                    ],
+                    "column_name": "Target Name",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.timezone",
+                    "data_type": "string",
+                    "example_values": [
+                        "US/Eastern"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.webLogin",
+                    "data_type": "string",
+                    "example_values": [
+                        "u1GJtIPc"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.links.self",
+                    "data_type": "string",
+                    "example_values": [
+                        "/api/xm/1/people?search=Ben+Natalie&offset=0&limit=4"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.total",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "2"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        ""
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "1"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "1"
+                    ]
+                }
             ],
-            "contains": ["xmatters event id"]
+            "versions": "EQ(*)"
         },
         {
-          "data_path": "action_result.data.*.data.*.links.self",
-          "data_type": "string",
-          "example_values": [
-            "/api/xm/1/events/3f48d1f6-a897-4132-9272-f2bc945adb68"
-            ]
-        },
-        {
-          "data_path": "action_result.data.*.data.*.submitter.id",
-          "data_type": "string",
-          "example_values": [
-            "0b34a572-52d7-4c2c-b6a8-af5a84365ee4"
-          ],
-          "contains": ["xmatters user id"]
-        },
-        {
-          "data_path": "action_result.data.*.data.*.submitter.links.self",
-          "data_type": "string",
-          "example_values": [
-            "/api/xm/1/people/0b34a572-52d7-4c2c-b6a8-af5a84365ee4"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.data.*.submitter.targetName",
-          "data_type": "string",
-          "example_values": [
-            "herman"
-          ],
-          "contains": ["xmatters target name"]
-        },
-        {
-          "data_path": "action_result.data.*.data.*.terminated",
-          "data_type": "string",
-          "example_values": [
-            "2017-06-12T18:55:55.502+0000"
-            ]
-        },
-        {
-          "data_path": "action_result.data.*.data.*.bypassPhoneIntro",
-          "data_type": "boolean",
-          "example_values": [
-            "False", "True"
-            ]
-        },
-        {
-          "data_path": "action_result.data.*.data.*.escalationOverride",
-          "data_type": "boolean",
-          "example_values": [
-            "False", "True"
-          ]
-        },
-        {
-          "data_path": "action_result.data.*.data.*.requirePhonePassword",
-          "data_type": "boolean",
-          "example_values": [
-            "False", "True"
-            ]
-        },
-        {
-          "data_path": "action_result.data.*.data.*.overrideDeviceRestrictions",
-          "data_type": "boolean",
-          "example_values": [
-            "False", "True"
-            ]
-        },
-        {
-          "data_path": "action_result.data.*.count",
-          "data_type": "numeric",
-          "example_values": [
-            "5"
-            ]
-        },
-        {
-          "data_path": "action_result.data.*.links.self",
-          "data_type": "string",
-          "example_values": [
-            "/api/xm/1/events?offset=0&limit=100"
-            ]
-        },
-        {
-          "data_path": "action_result.data.*.total",
-          "data_type": "numeric",
-          "example_values": [
-            "5"
-            ]
-        },
-        {
-          "data_path": "action_result.parameter.status",
-          "data_type": "string",
-          "example_values": [
-            "TERMINATED"
-          ]
-        },
-        {
-          "data_path": "action_result.parameter.offset",
-          "data_type": "numeric",
-          "example_values": [
-            10
-          ]
-        },
-        {
-          "data_path": "action_result.parameter.limit",
-          "data_type": "numeric",
-          "example_values": [
-            10
-          ]
-        },
-        {
-          "data_path": "action_result.parameter.from",
-          "data_type": "string",
-          "example_values": [
-            "2017-06-10T00:21:14.185+0000"
-          ]
-        },
-        {
-          "data_path": "action_result.parameter.to",
-          "data_type": "string",
-          "example_values": [
-            "2017-06-10T00:21:14.185+0000"
-          ]
-        },
-        {
-          "data_path": "action_result.parameter.property_name",
-          "data_type": "string",
-          "example_values": [
-            "isTrue",
-            "floor"
-          ]
-        },
-        {
-          "data_path": "action_result.parameter.property_value",
-          "data_type": "string",
-          "example_values": [
-            "false",
-            "Balcony%2Cupper"
-          ]
-        },
-        {
-          "data_path": "action_result.parameter.page_uri",
-          "data_type": "numeric",
-          "example_values": [
-            "/api/xm/1/events?offset=4&limit=4"
-          ]
-        },
-        {
-          "data_path": "action_result.status",
-          "data_type": "string",
-          "example_values": [
-            "success"
-            ]
-        },
-        {
-          "data_path": "action_result.summary.next_page",
-          "data_type": "string",
-          "example_values": [
-            "/api/xm/1/events?offset=4&limit=4"
-          ]
-        },
-        {
-          "data_path": "action_result.message",
-          "data_type": "string",
-          "example_values": [
-            ""
-          ]
-        },
-        {
-          "data_path": "summary.total_objects",
-          "data_type": "numeric",
-          "example_values": [
-            "1"
-          ]
-        },
-        {
-          "data_path": "summary.total_objects_successful",
-          "data_type": "numeric",
-          "example_values": [
-            "1"
-          ]
+            "action": "list events",
+            "description": "Query for specific events by providing a property name/value",
+            "type": "generic",
+            "identifier": "list_events",
+            "read_only": true,
+            "parameters": {
+                "property_name": {
+                    "description": "Comma seperated list of property names",
+                    "data_type": "string",
+                    "required": false,
+                    "order": 0,
+                    "allow_list": false,
+                    "primary": true
+                },
+                "property_value": {
+                    "description": "Comma seperated list of property values",
+                    "data_type": "string",
+                    "required": false,
+                    "order": 1,
+                    "allow_list": false,
+                    "primary": true
+                },
+                "offset": {
+                    "description": "Number of items to skip before returning results",
+                    "data_type": "numeric",
+                    "required": false,
+                    "order": 2
+                },
+                "limit": {
+                    "description": "The number of items to return",
+                    "data_type": "numeric",
+                    "required": false,
+                    "order": 3
+                },
+                "status": {
+                    "description": "Status of the event",
+                    "data_type": "string",
+                    "value_list": [
+                        "",
+                        "ACTIVE",
+                        "SUSPENDED",
+                        "TERMINATED"
+                    ],
+                    "required": false,
+                    "order": 4
+                },
+                "ph": {
+                    "data_type": "ph",
+                    "order": 5
+                },
+                "from": {
+                    "description": "A date in UTC Format for the start of a time range to search",
+                    "data_type": "string",
+                    "required": false,
+                    "order": 6
+                },
+                "to": {
+                    "description": "A date in UTC Format for the end of a time range to search",
+                    "data_type": "string",
+                    "required": false,
+                    "order": 7
+                },
+                "page_uri": {
+                    "description": "URI For the page",
+                    "data_type": "string",
+                    "required": false,
+                    "order": 8
+                }
+            },
+            "render": {
+                "width": 12,
+                "title": "List Events",
+                "type": "table",
+                "height": 5
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.from",
+                    "data_type": "string",
+                    "example_values": [
+                        "2017-06-10T00:21:14.185+0000"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.limit",
+                    "data_type": "numeric",
+                    "example_values": [
+                        10
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.offset",
+                    "data_type": "numeric",
+                    "example_values": [
+                        10
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.page_uri",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "/api/xm/1/events?offset=4&limit=4"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.property_name",
+                    "data_type": "string",
+                    "example_values": [
+                        "isTrue",
+                        "floor"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.property_value",
+                    "data_type": "string",
+                    "example_values": [
+                        "false",
+                        "Balcony%2Cupper"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "TERMINATED"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.to",
+                    "data_type": "string",
+                    "example_values": [
+                        "2017-06-10T00:21:14.185+0000"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.count",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "5"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.bypassPhoneIntro",
+                    "data_type": "boolean",
+                    "example_values": [
+                        "False",
+                        "True"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.created",
+                    "data_type": "string",
+                    "example_values": [
+                        "2017-06-12T18:55:21.291+0000"
+                    ],
+                    "column_name": "Created",
+                    "column_order": 4
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.escalationOverride",
+                    "data_type": "boolean",
+                    "example_values": [
+                        "False",
+                        "True"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.eventId",
+                    "data_type": "string",
+                    "example_values": [
+                        "2094001"
+                    ],
+                    "contains": [
+                        "xmatters event id"
+                    ],
+                    "column_name": "Event ID",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.id",
+                    "data_type": "string",
+                    "example_values": [
+                        "3f48d1f6-a897-4132-9272-f2bc945adb68"
+                    ],
+                    "contains": [
+                        "xmatters event id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.incident",
+                    "data_type": "string",
+                    "example_values": [
+                        "INCIDENT_ID-2094001"
+                    ],
+                    "column_name": "Incident",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.links.self",
+                    "data_type": "string",
+                    "example_values": [
+                        "/api/xm/1/events/3f48d1f6-a897-4132-9272-f2bc945adb68"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.overrideDeviceRestrictions",
+                    "data_type": "boolean",
+                    "example_values": [
+                        "False",
+                        "True"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.priority",
+                    "data_type": "string",
+                    "example_values": [
+                        "LOW"
+                    ],
+                    "column_name": "Priority",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.requirePhonePassword",
+                    "data_type": "boolean",
+                    "example_values": [
+                        "False",
+                        "True"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "TERMINATED"
+                    ],
+                    "column_name": "Status",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.submitter.id",
+                    "data_type": "string",
+                    "example_values": [
+                        "0b34a572-52d7-4c2c-b6a8-af5a84365ee4"
+                    ],
+                    "contains": [
+                        "xmatters user id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.submitter.links.self",
+                    "data_type": "string",
+                    "example_values": [
+                        "/api/xm/1/people/0b34a572-52d7-4c2c-b6a8-af5a84365ee4"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.submitter.targetName",
+                    "data_type": "string",
+                    "example_values": [
+                        "herman"
+                    ],
+                    "contains": [
+                        "xmatters target name"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.terminated",
+                    "data_type": "string",
+                    "example_values": [
+                        "2017-06-12T18:55:55.502+0000"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.links.self",
+                    "data_type": "string",
+                    "example_values": [
+                        "/api/xm/1/events?offset=0&limit=100"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.total",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "5"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.next_page",
+                    "data_type": "string",
+                    "example_values": [
+                        "/api/xm/1/events?offset=4&limit=4"
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        ""
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "1"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        "1"
+                    ]
+                }
+            ],
+            "versions": "EQ(*)"
         }
-      ],
-      "versions": "EQ(*)"
-    }
-  ]
+    ]
 }
