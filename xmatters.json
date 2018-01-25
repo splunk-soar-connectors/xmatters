@@ -14,7 +14,7 @@
     "min_phantom_version": "2.1.452",
     "logo": "logo_xmatters.svg",
     "logo_dark": "logo_xmatters_dark.svg",
-    "license": "Copyright (c) Phantom Cyber Corporation 2017",
+    "license": "Copyright (c) Phantom Cyber Corporation, 2017-2018",
     "configuration": {
         "base_url": {
             "data_type": "string",
