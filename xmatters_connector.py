@@ -106,8 +106,7 @@ class XMattersConnector(BaseConnector):
         except:
             error_text = "Cannot parse error details"
 
-        message = "Status Code: {0}. Data from server:\n{1}\n".format(status_code,
-                error_text)
+        message = u"Status Code: {0}. Data from server:\n{1}\n".format(status_code, error_text)
 
         message = message.replace('{', '{{').replace('}', '}}')
 
@@ -178,8 +177,6 @@ class XMattersConnector(BaseConnector):
         except Exception as e:
             # Set the action_result status to error, the handler function will most probably return as is
             return RetVal(action_result.set_status(phantom.APP_ERROR, "Error connecting: {0}".format(str(e))), None)
-
-        self.debug_print(response.url)
 
         return self._process_response(response, action_result)
 
@@ -301,7 +298,7 @@ class XMattersConnector(BaseConnector):
         return urllib.urlencode(params).replace("%2C", ",").replace("%252C", "%2C")
 
     def _test_connectivity(self, param):
-        action_result = ActionResult()
+        action_result = self.add_action_result(ActionResult(dict(param)))
         ret_val, auth, headers = self._get_authorization_credentials(action_result)
         if (phantom.is_fail(ret_val)):
             return self.set_status_save_progress(phantom.APP_ERROR, "Connectivity test failed")
@@ -311,9 +308,10 @@ class XMattersConnector(BaseConnector):
         ret_val, response_json = self._make_rest_call_helper(action_result, '/api/xm/1/events?limit=1', headers=headers, auth=auth)
 
         if (phantom.is_fail(ret_val)):
-            reason = response_json.get('reason')
-            if reason:
-                self.save_progress("Error: {0}".format(reason))
+            if response_json:
+                reason = response_json.get('reason')
+                if reason:
+                    self.save_progress("Error: {0}".format(reason))
             return self.set_status(phantom.APP_ERROR, "Connectivity test failed")
         else:
             return self.set_status_save_progress(phantom.APP_SUCCESS, "Connectivity test succeeded")
