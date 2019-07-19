@@ -158,7 +158,7 @@ class XMattersConnector(BaseConnector):
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
-    def _make_rest_call(self, action_result, endpoint, params={}, body={}, headers={}, method="get", auth=None):
+    def _make_rest_call(self, action_result, endpoint, params={}, body={}, headers={}, data={}, method="get", auth=None):
         """ Returns 2 values, use RetVal """
 
         url = self._base_url + endpoint
@@ -202,8 +202,8 @@ class XMattersConnector(BaseConnector):
             params['password'] = config[XM_CONFIG_PASSWORD]
             params['grant_type'] = "password"
 
-        headers = self._create_headers()
-        ret_val, response_json = self._make_rest_call(action_result, '/api/xm/1/oauth2/token', params=params, headers=headers, method="post")
+        headers = { 'Content-Type': 'application/x-www-form-urlencoded' }
+        ret_val, response_json = self._make_rest_call(action_result, '/api/xm/1/oauth2/token', data=params, headers=headers, method="post")
 
         if (phantom.is_fail(ret_val) and params['grant_type'] == 'refresh_token'):
             self.debug_print("Unable to generate new key with refresh token")
@@ -259,7 +259,7 @@ class XMattersConnector(BaseConnector):
 
         return ret_val, auth, headers
 
-    def _make_rest_call_helper(self, action_result, endpoint, params={}, body={}, headers={}, method="get", auth=None):
+    def _make_rest_call_helper(self, action_result, endpoint, params={}, body={}, headers={}, data={}, method="get", auth=None):
         try:
             return self._make_rest_call(action_result, endpoint, params=params, body=body, headers=headers, method=method, auth=auth)
         except UnauthorizedOAuthTokenException:
