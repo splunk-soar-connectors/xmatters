@@ -3,7 +3,7 @@
     "name": "xMatters",
     "description": "This app integrates with xMatters to retrieve information about events and users",
     "type": "DevOps",
-    "publisher": "Phantom",
+    "publisher": "Splunk",
     "main_module": "xmatters_connector.pyc",
     "app_version": "1.0.18",
     "utctime_updated": "2019-07-19T19:49:23.000000Z",
@@ -11,10 +11,10 @@
     "product_vendor": "xMatters",
     "product_name": "xMatters",
     "product_version_regex": ".*",
-    "min_phantom_version": "2.1.452",
+    "min_phantom_version": "4.2.7532",
     "logo": "logo_xmatters.svg",
     "logo_dark": "logo_xmatters_dark.svg",
-    "license": "Copyright (c) Phantom Cyber Corporation, 2017-2018",
+    "license": "Copyright (c) 2017-2019 Splunk Inc.",
     "configuration": {
         "base_url": {
             "data_type": "string",
