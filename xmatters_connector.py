@@ -98,7 +98,8 @@ class XMattersConnector(BaseConnector):
         status_code = response.status_code
 
         try:
-            soup = BeautifulSoup(response.text, "html.parser")
+            clean_text = response.text.encode('utf8').decode('ascii', 'ignore')
+            soup = BeautifulSoup(clean_text, "html.parser")
             error_text = soup.text
             split_lines = error_text.split('\n')
             split_lines = [x.strip() for x in split_lines if x.strip()]
