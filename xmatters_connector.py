@@ -66,6 +66,8 @@ class XMattersConnector(BaseConnector):
     def initialize(self):
         config = self.get_config()
         self._base_url = config[XM_CONFIG_BASE_URL].rstrip('/')
+        self._username = config[XM_CONFIG_USERNAME].encode('utf-8')
+        self._password = config[XM_CONFIG_PASSWORD]
         self._client_id = config.get(XM_CONFIG_CLIENT_ID, None)
         if (self._client_id):
             self._use_token = True
@@ -246,8 +248,7 @@ class XMattersConnector(BaseConnector):
         else:
             ret_val = phantom.APP_SUCCESS
             self.save_progress("Connecting with HTTP Basic Auth")
-            config = self.get_config()
-            auth = requests.auth.HTTPBasicAuth(config[XM_CONFIG_USERNAME], config[XM_CONFIG_PASSWORD])
+            auth = requests.auth.HTTPBasicAuth(self._username, self._password)
             headers = self._create_headers()
 
         return ret_val, auth, headers
