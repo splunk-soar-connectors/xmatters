@@ -4,17 +4,21 @@
     "description": "This app integrates with xMatters to retrieve information about events and users",
     "type": "devops",
     "publisher": "Splunk",
-    "main_module": "xmatters_connector.pyc",
-    "app_version": "1.0.23",
+    "main_module": "xmatters_connector.py",
+    "app_version": "2.0.0",
     "utctime_updated": "2019-09-19T23:19:12.000000Z",
     "package_name": "phantom_xmatters",
     "product_vendor": "xMatters",
     "product_name": "xMatters",
     "product_version_regex": ".*",
-    "min_phantom_version": "4.2.7532",
+    "min_phantom_version": "4.9.39220",
     "logo": "logo_xmatters.svg",
     "logo_dark": "logo_xmatters_dark.svg",
-    "license": "Copyright (c) 2017-2019 Splunk Inc.",
+    "license": "Copyright (c) 2017-2021 Splunk Inc.",
+    "python_version": "3",
+    "latest_tested_versions": [
+        "api v1 tested on 21 July, 2021"
+    ],
     "configuration": {
         "base_url": {
             "data_type": "string",
@@ -41,8 +45,7 @@
         "client_id": {
             "data_type": "string",
             "description": "Client ID. OAuth will be preferred if provided",
-            "order": 4,
-            "required": false
+            "order": 4
         }
     },
     "actions": [
@@ -76,21 +79,18 @@
                 "embed_recipients": {
                     "description": "Embed Recipients",
                     "data_type": "boolean",
-                    "required": false,
                     "default": false,
                     "order": 1
                 },
                 "embed_response_options": {
                     "description": "Embed Response Options",
                     "data_type": "boolean",
-                    "required": false,
                     "default": false,
                     "order": 2
                 },
                 "targeted": {
                     "description": "Return directly targeted recipients",
                     "data_type": "boolean",
-                    "required": false,
                     "default": false,
                     "order": 3
                 }
@@ -182,10 +182,25 @@
                     "column_order": "1"
                 },
                 {
+                    "data_path": "action_result.data.*.eventType",
+                    "data_type": "string",
+                    "example_value": [
+                        "USER"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.expirationInMinutes",
                     "data_type": "numeric",
                     "example_values": [
                         "1440"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.floodControl",
+                    "data_type": "boolean",
+                    "example_value": [
+                        false,
+                        true
                     ]
                 },
                 {
@@ -196,6 +211,13 @@
                     ],
                     "contains": [
                         "xmatters form uuid"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.form.name",
+                    "data_type": "string",
+                    "example_value": [
+                        "Existing incident"
                     ]
                 },
                 {
@@ -225,6 +247,13 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.name",
+                    "data_type": "string",
+                    "example_value": [
+                        "Incident: : "
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.notificationAuditCount",
                     "data_type": "numeric",
                     "example_values": [
@@ -237,6 +266,27 @@
                     "example_values": [
                         "False",
                         "True"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.plan.id",
+                    "data_type": "string",
+                    "example_value": [
+                        "e2a78834-6a2d-4d08-aa45-9fd20b185f50"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.plan.integrationConfigType",
+                    "data_type": "string",
+                    "example_value": [
+                        "INCIDENT_MANAGEMENT"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.plan.name",
+                    "data_type": "string",
+                    "example_value": [
+                        "xMatters Incident Management Workflow"
                     ]
                 },
                 {
@@ -388,6 +438,104 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.responseCountsEnabled",
+                    "data_type": "boolean",
+                    "example_value": [
+                        false,
+                        true
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.responseOptions.count",
+                    "data_type": "numeric",
+                    "example_value": [
+                        2
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.responseOptions.data.*.action",
+                    "data_type": "string",
+                    "example_value": [
+                        "STOP_NOTIFYING_TARGET"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.responseOptions.data.*.allowComments",
+                    "data_type": "boolean",
+                    "example_value": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.responseOptions.data.*.contribution",
+                    "data_type": "string",
+                    "example_value": [
+                        "POSITIVE"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.responseOptions.data.*.description",
+                    "data_type": "string",
+                    "example_value": [
+                        "Engage with this incident as a resolver"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.responseOptions.data.*.id",
+                    "data_type": "string",
+                    "example_value": [
+                        "94ae0b60-f841-4307-b37b-73c5639c2ef3"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.responseOptions.data.*.joinConference",
+                    "data_type": "boolean",
+                    "example_value": [
+                        false,
+                        true
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.responseOptions.data.*.number",
+                    "data_type": "numeric",
+                    "example_value": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.responseOptions.data.*.order",
+                    "data_type": "numeric",
+                    "example_value": [
+                        0
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.responseOptions.data.*.prompt",
+                    "data_type": "string",
+                    "example_value": [
+                        "Accept"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.responseOptions.data.*.redirectUrl",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.responseOptions.data.*.text",
+                    "data_type": "string",
+                    "example_value": [
+                        "Accept"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.responseOptions.total",
+                    "data_type": "numeric",
+                    "example_value": [
+                        2
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.status",
                     "data_type": "string",
                     "example_values": [
@@ -395,6 +543,13 @@
                     ],
                     "column_name": "Status",
                     "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.submitter.firstName",
+                    "data_type": "string",
+                    "example_value": [
+                        "Herman"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.submitter.id",
@@ -407,10 +562,24 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.submitter.lastName",
+                    "data_type": "string",
+                    "example_value": [
+                        "Edwards"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.submitter.links.self",
                     "data_type": "string",
                     "example_values": [
                         "/api/xm/1/people/0b34a572-52d7-4c2c-b6a8-af5a84365ee4"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.submitter.recipientType",
+                    "data_type": "string",
+                    "example_value": [
+                        "PERSON"
                     ]
                 },
                 {
@@ -431,14 +600,38 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.summary",
-                    "data_type": "string"
+                    "data_path": "action_result.data.*.voicemailOptions.every",
+                    "data_type": "numeric",
+                    "example_value": [
+                        60
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.voicemailOptions.leave",
+                    "data_type": "string",
+                    "example_value": [
+                        "callbackonly"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.voicemailOptions.retry",
+                    "data_type": "numeric",
+                    "example_value": [
+                        0
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.event_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "3456345"
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
                     "data_type": "string",
                     "example_values": [
-                        ""
+                        "Successfully retrieved event"
                     ]
                 },
                 {
@@ -555,10 +748,25 @@
                     "column_order": 1
                 },
                 {
+                    "data_path": "action_result.data.*.eventType",
+                    "data_type": "string",
+                    "example_value": [
+                        "USER"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.expirationInMinutes",
                     "data_type": "numeric",
                     "example_values": [
                         "1440"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.floodControl",
+                    "data_type": "boolean",
+                    "example_value": [
+                        false,
+                        true
                     ]
                 },
                 {
@@ -826,6 +1034,13 @@
                     "column_order": 2
                 },
                 {
+                    "data_path": "action_result.data.*.submitter.firstName",
+                    "data_type": "string",
+                    "example_value": [
+                        "Herman"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.submitter.id",
                     "data_type": "string",
                     "example_values": [
@@ -836,10 +1051,24 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.submitter.lastName",
+                    "data_type": "string",
+                    "example_value": [
+                        "Edwards"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.submitter.links.self",
                     "data_type": "string",
                     "example_values": [
                         "/api/xm/1/people/0b34a572-52d7-4c2c-b6a8-af5a84365ee4"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.submitter.recipientType",
+                    "data_type": "string",
+                    "example_value": [
+                        "PERSON"
                     ]
                 },
                 {
@@ -853,14 +1082,17 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.summary",
-                    "data_type": "string"
+                    "data_path": "action_result.summary.event_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "2345634"
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
                     "data_type": "string",
                     "example_values": [
-                        ""
+                        "Successfully updated event"
                     ]
                 },
                 {
@@ -902,7 +1134,6 @@
                     "description": "Include a list of each user's role",
                     "data_type": "boolean",
                     "order": 1,
-                    "required": false,
                     "default": false
                 }
             },
@@ -977,6 +1208,13 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.lastLogin",
+                    "data_type": "string",
+                    "example_value": [
+                        "2021-07-09T08:50:29.251Z"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.lastName",
                     "data_type": "string",
                     "example_values": [
@@ -984,6 +1222,13 @@
                     ],
                     "column_name": "Last Name",
                     "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data.*.licenseType",
+                    "data_type": "string",
+                    "example_value": [
+                        "FULL_USER"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.links.self",
@@ -1004,6 +1249,13 @@
                     "data_type": "numeric",
                     "example_values": [
                         "1"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.roles.data.*.description",
+                    "data_type": "string",
+                    "example_value": [
+                        "Has all permissions and has access to the developer tab."
                     ]
                 },
                 {
@@ -1084,14 +1336,32 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.summary",
-                    "data_type": "string"
+                    "data_path": "action_result.data.*.whenCreated",
+                    "data_type": "string",
+                    "example_value": [
+                        "2021-07-01T06:19:56.439Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.whenUpdated",
+                    "data_type": "string",
+                    "example_value": [
+                        "2021-07-09T08:50:29.253Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.person_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "phantomlab",
+                        "440bbb02-07ab-43ea-b524-b1db12492b1b"
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
                     "data_type": "string",
                     "example_values": [
-                        ""
+                        "Successfully retrieved user"
                     ]
                 },
                 {
@@ -1130,7 +1400,7 @@
                     "primary": true
                 },
                 "recipients": {
-                    "description": "Comma seperated list of user names",
+                    "description": "Comma-separated list of user names",
                     "data_type": "string",
                     "required": true,
                     "order": 1
@@ -1138,19 +1408,16 @@
                 "properties": {
                     "description": "A JSON object of property names and values",
                     "data_type": "string",
-                    "required": false,
                     "order": 2
                 },
                 "callbacks": {
                     "description": "The list of Event Update Callback Objects",
                     "data_type": "string",
-                    "required": false,
                     "order": 3
                 },
                 "priority": {
                     "description": "The priority of the event",
                     "data_type": "string",
-                    "required": false,
                     "value_list": [
                         "",
                         "LOW",
@@ -1162,14 +1429,11 @@
                 "conferences": {
                     "description": "The list of conferences bridges",
                     "data_type": "string",
-                    "required": false,
                     "order": 5
                 },
                 "responses": {
-                    "description": "A list of response option UUIDs",
+                    "description": "The comma-separated list of response option UUIDs",
                     "data_type": "string",
-                    "required": false,
-                    "allow_list": false,
                     "order": 6
                 }
             },
@@ -1190,11 +1454,17 @@
                 },
                 {
                     "data_path": "action_result.parameter.callbacks",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "[{\"url\":\"https://phantomlab1.xmatters.com/api/xm/1/events/ca7a98b3-80d6-42c8-b651-9831b5e16a36\", \"type\":\"status\", \"authType\":\"basic\", \"authUserName\":\"mmcbride\", \"authPassword\":\"password123\"}]"
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.conferences",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "[{\"name\": \"31582159\"}]"
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.form_uuid",
@@ -1208,22 +1478,34 @@
                 },
                 {
                     "data_path": "action_result.parameter.priority",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "High",
+                        "Medium",
+                        "Low"
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.properties",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "{\"property_name\": \"property_value\"}"
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.recipients",
                     "data_type": "string",
                     "example_values": [
-                        "[{\"targetName\": \"npoorman\"}]"
+                        "npoorman",
+                        "herman, phantomlab"
                     ]
                 },
                 {
                     "data_path": "action_result.parameter.responses",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "[\"01d484d3-4042-41da-8ca4-9bd45e7cc0c8\"]"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.id",
@@ -1238,14 +1520,18 @@
                     "column_order": 0
                 },
                 {
-                    "data_path": "action_result.summary",
-                    "data_type": "string"
+                    "data_path": "action_result.summary.event_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "2212413342",
+                        "2212413343"
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
                     "data_type": "string",
                     "example_values": [
-                        ""
+                        "Event created successfully"
                     ]
                 },
                 {
@@ -1273,48 +1559,41 @@
             "read_only": true,
             "parameters": {
                 "search": {
-                    "description": "Search term. Will check first name, last name, weblogin, etc. Seperate values with either a space or a + sign",
+                    "description": "Search term. Will check first name, last name, web login, etc. Separate values with either space or a + sign",
                     "data_type": "string",
-                    "required": false,
                     "order": 0
                 },
                 "embed_roles": {
-                    "description": "Include a list of each users's roles",
+                    "description": "Include a list of each users' roles",
                     "data_type": "boolean",
                     "order": 1,
-                    "required": false,
                     "default": false
                 },
                 "property_name": {
-                    "description": "Comma seperated list of property names",
+                    "description": "Comma-separated list of property names",
                     "data_type": "string",
-                    "required": false,
                     "order": 2,
                     "allow_list": false
                 },
                 "property_value": {
-                    "description": "Comma seperated list of property values",
+                    "description": "Comma-separated list of property values",
                     "data_type": "string",
-                    "required": false,
                     "order": 3,
                     "allow_list": false
                 },
                 "offset": {
                     "description": "Number of items to skip before returning results",
                     "data_type": "numeric",
-                    "required": false,
                     "order": 4
                 },
                 "limit": {
                     "description": "The number of items to return",
                     "data_type": "numeric",
-                    "required": false,
                     "order": 5
                 },
                 "page_uri": {
                     "description": "URI For the page",
                     "data_type": "string",
-                    "required": false,
                     "order": 6
                 }
             },
@@ -1343,16 +1622,16 @@
                 },
                 {
                     "data_path": "action_result.parameter.limit",
-                    "data_type": "string",
+                    "data_type": "numeric",
                     "example_values": [
-                        "10"
+                        10
                     ]
                 },
                 {
                     "data_path": "action_result.parameter.offset",
-                    "data_type": "string",
+                    "data_type": "numeric",
                     "example_values": [
-                        "10"
+                        10
                     ]
                 },
                 {
@@ -1424,6 +1703,13 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.data.*.lastLogin",
+                    "data_type": "string",
+                    "example_value": [
+                        "2021-07-09T08:50:29.251Z"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.data.*.lastName",
                     "data_type": "string",
                     "example_values": [
@@ -1431,6 +1717,13 @@
                     ],
                     "column_name": "Last Name",
                     "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.licenseType",
+                    "data_type": "string",
+                    "example_value": [
+                        "FULL_USER"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.data.*.links.self",
@@ -1444,6 +1737,41 @@
                     "data_type": "string",
                     "example_values": [
                         "PERSON"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.roles.count",
+                    "data_type": "numeric",
+                    "example_value": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.roles.data.*.description",
+                    "data_type": "string",
+                    "example_value": [
+                        "Has all permissions and has access to the developer tab."
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.roles.data.*.id",
+                    "data_type": "string",
+                    "example_value": [
+                        "8d7b84a9-1c40-4f08-a55e-c96b25b067ee"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.roles.data.*.name",
+                    "data_type": "string",
+                    "example_value": [
+                        "Company Supervisor"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.roles.total",
+                    "data_type": "numeric",
+                    "example_value": [
+                        1
                     ]
                 },
                 {
@@ -1503,6 +1831,20 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.data.*.whenCreated",
+                    "data_type": "string",
+                    "example_value": [
+                        "2021-07-01T06:19:56.439Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.whenUpdated",
+                    "data_type": "string",
+                    "example_value": [
+                        "2021-07-09T08:50:29.253Z"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.links.self",
                     "data_type": "string",
                     "example_values": [
@@ -1517,14 +1859,17 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.summary",
-                    "data_type": "string"
+                    "data_path": "action_result.summary.people_returned",
+                    "data_type": "string",
+                    "example_values": [
+                        7
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
                     "data_type": "string",
                     "example_values": [
-                        ""
+                        "Users retrieved successfully"
                     ]
                 },
                 {
@@ -1552,29 +1897,25 @@
             "read_only": true,
             "parameters": {
                 "property_name": {
-                    "description": "Comma seperated list of property names",
+                    "description": "Comma-separated list of property names",
                     "data_type": "string",
-                    "required": false,
                     "order": 0,
                     "allow_list": false
                 },
                 "property_value": {
-                    "description": "Comma seperated list of property values",
+                    "description": "Comma-separated list of property values",
                     "data_type": "string",
-                    "required": false,
                     "order": 1,
                     "allow_list": false
                 },
                 "offset": {
                     "description": "Number of items to skip before returning results",
                     "data_type": "numeric",
-                    "required": false,
                     "order": 2
                 },
                 "limit": {
                     "description": "The number of items to return",
                     "data_type": "numeric",
-                    "required": false,
                     "order": 3
                 },
                 "status": {
@@ -1586,7 +1927,6 @@
                         "SUSPENDED",
                         "TERMINATED"
                     ],
-                    "required": false,
                     "order": 4
                 },
                 "ph": {
@@ -1596,19 +1936,16 @@
                 "from": {
                     "description": "A date in UTC Format for the start of a time range to search",
                     "data_type": "string",
-                    "required": false,
                     "order": 6
                 },
                 "to": {
                     "description": "A date in UTC Format for the end of a time range to search",
                     "data_type": "string",
-                    "required": false,
                     "order": 7
                 },
                 "page_uri": {
                     "description": "URI For the page",
                     "data_type": "string",
-                    "required": false,
                     "order": 8
                 }
             },
@@ -1631,7 +1968,7 @@
                     "data_path": "action_result.parameter.from",
                     "data_type": "string",
                     "example_values": [
-                        "2017-06-10T00:21:14.185+0000"
+                        "2022-12-31T23:59:59Z"
                     ]
                 },
                 {
@@ -1650,7 +1987,7 @@
                 },
                 {
                     "data_path": "action_result.parameter.page_uri",
-                    "data_type": "numeric",
+                    "data_type": "string",
                     "example_values": [
                         "/api/xm/1/events?offset=4&limit=4"
                     ]
@@ -1682,14 +2019,14 @@
                     "data_path": "action_result.parameter.to",
                     "data_type": "string",
                     "example_values": [
-                        "2017-06-10T00:21:14.185+0000"
+                        "2022-12-31T23:59:59Z"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.count",
                     "data_type": "numeric",
                     "example_values": [
-                        "5"
+                        5
                     ]
                 },
                 {
@@ -1730,6 +2067,35 @@
                     "column_order": 1
                 },
                 {
+                    "data_path": "action_result.data.*.data.*.eventType",
+                    "data_type": "string",
+                    "example_value": [
+                        "USER"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.floodControl",
+                    "data_type": "boolean",
+                    "example_value": [
+                        false,
+                        true
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.form.id",
+                    "data_type": "string",
+                    "example_value": [
+                        "a1e9d1f2-7e9e-4ea5-8ab1-a33788a07dd7"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.form.name",
+                    "data_type": "string",
+                    "example_value": [
+                        "New Incident Notification"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.data.*.id",
                     "data_type": "string",
                     "example_values": [
@@ -1756,11 +2122,39 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.data.*.name",
+                    "data_type": "string",
+                    "example_value": [
+                        "Incident: INC-1: Testing"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.data.*.overrideDeviceRestrictions",
                     "data_type": "boolean",
                     "example_values": [
                         "False",
                         "True"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.plan.id",
+                    "data_type": "string",
+                    "example_value": [
+                        "e2a78834-6a2d-4d08-aa45-9fd20b185f50"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.plan.integrationConfigType",
+                    "data_type": "string",
+                    "example_value": [
+                        "INCIDENT_MANAGEMENT"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.plan.name",
+                    "data_type": "string",
+                    "example_value": [
+                        "xMatters Incident Management Workflow"
                     ]
                 },
                 {
@@ -1773,11 +2167,40 @@
                     "column_order": 3
                 },
                 {
+                    "data_path": "action_result.data.*.data.*.relatedIncident.id",
+                    "data_type": "string",
+                    "example_value": [
+                        "b7050f6b-d6a3-4c9b-8c82-83a66d4cf296"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.relatedIncident.links.self",
+                    "data_type": "string",
+                    "example_value": [
+                        "/api/xm/1/incidents/id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.requestId",
+                    "data_type": "string",
+                    "example_value": [
+                        "0bbbb7f2-e24c-43b7-ba45-49e20a1189a8"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.data.*.requirePhonePassword",
                     "data_type": "boolean",
                     "example_values": [
                         "False",
                         "True"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.responseCountsEnabled",
+                    "data_type": "boolean",
+                    "example_value": [
+                        false,
+                        true
                     ]
                 },
                 {
@@ -1790,6 +2213,13 @@
                     "column_order": 2
                 },
                 {
+                    "data_path": "action_result.data.*.data.*.submitter.firstName",
+                    "data_type": "string",
+                    "example_value": [
+                        "Herman"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.data.*.submitter.id",
                     "data_type": "string",
                     "example_values": [
@@ -1800,10 +2230,24 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.data.*.submitter.lastName",
+                    "data_type": "string",
+                    "example_value": [
+                        "Edwards"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.data.*.submitter.links.self",
                     "data_type": "string",
                     "example_values": [
                         "/api/xm/1/people/0b34a572-52d7-4c2c-b6a8-af5a84365ee4"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.submitter.recipientType",
+                    "data_type": "string",
+                    "example_value": [
+                        "PERSON"
                     ]
                 },
                 {
@@ -1845,10 +2289,17 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.summary.events_returned",
+                    "data_type": "string",
+                    "example_values": [
+                        7
+                    ]
+                },
+                {
                     "data_path": "action_result.message",
                     "data_type": "string",
                     "example_values": [
-                        ""
+                        "Events retrieved successfully"
                     ]
                 },
                 {

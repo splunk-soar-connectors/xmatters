@@ -1,25 +1,26 @@
 # File: xmatters_connector.py
-# Copyright (c) 2017-2019 Splunk Inc.
+# Copyright (c) 2017-2021 Splunk Inc.
 #
 # SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part
 # without a valid written license from Splunk Inc. is PROHIBITED.
 
+import re
+import urllib.error
+import urllib.parse
+import urllib.request
+from datetime import datetime
+
 # Phantom Imports
 import phantom.app as phantom
-from phantom.base_connector import BaseConnector
+# Generic Imports
+import requests
+import json
+from bs4 import BeautifulSoup
 from phantom.action_result import ActionResult
+from phantom.base_connector import BaseConnector
 
 # Const Imports
 from xmatters_consts import *
-
-# Generic Imports
-import requests
-import urllib
-import re
-import simplejson as json
-from bs4 import BeautifulSoup
-from datetime import datetime
-
 
 APP_PARAM_TO_API_PARAM_MAP = {
     "property_name": "propertyName",
@@ -27,8 +28,8 @@ APP_PARAM_TO_API_PARAM_MAP = {
 }
 
 DECODE_JSON_PARAMETERS = [
-    'properties', 'response'
-    'callbacks', 'conferences',
+    'properties', 'responses',
+    'callbacks', 'conferences'
 ]
 
 DT_STR_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
@@ -69,7 +70,7 @@ class XMattersConnector(BaseConnector):
         self._username = config[XM_CONFIG_USERNAME].encode('utf-8')
         self._password = config[XM_CONFIG_PASSWORD]
         self._client_id = config.get(XM_CONFIG_CLIENT_ID, None)
-        if (self._client_id):
+        if self._client_id:
             self._use_token = True
 
         self._state = self.load_state()
@@ -79,9 +80,28 @@ class XMattersConnector(BaseConnector):
         self.save_state(self._state)
         return phantom.APP_SUCCESS
 
+    def _get_error_message_from_exception(self, e):
+        """ This method is used to get appropriate error message from the exception.
+        :param e: Exception object
+        :return: error message
+        """
+        error_code = PHANTOM_ERR_CODE_UNAVAILABLE
+        error_msg = PHANTOM_ERR_MSG_UNAVAILABLE
+        try:
+            if hasattr(e, 'args'):
+                if len(e.args) > 1:
+                    error_code = e.args[0]
+                    error_msg = e.args[1]
+                elif len(e.args) == 1:
+                    error_msg = e.args[0]
+        except:
+            pass
+
+        return "Error Code: {0}. Error Message: {1}".format(error_code, error_msg)
+
     def _process_empty_reponse(self, response, action_result):
 
-        if (200 <= response.status_code < 205):
+        if 200 <= response.status_code < 205:
             return RetVal(phantom.APP_SUCCESS, {})
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, "Empty response and no information in the header"), None)
@@ -101,7 +121,7 @@ class XMattersConnector(BaseConnector):
         except:
             error_text = "Cannot parse error details"
 
-        message = u"Status Code: {0}. Data from server:\n{1}\n".format(status_code, error_text)
+        message = "Status Code: {0}. Data from server:\n{1}\n".format(status_code, error_text)
 
         message = message.replace('{', '{{').replace('}', '}}')
 
@@ -116,11 +136,11 @@ class XMattersConnector(BaseConnector):
             self.save_progress('Cannot parse JSON')
             return RetVal(action_result.set_status(phantom.APP_ERROR, "Unable to parse response as JSON", e), None)
 
-        if (200 <= r.status_code < 205):
+        if 200 <= r.status_code < 205:
             return RetVal(phantom.APP_SUCCESS, resp_json)
 
         # Unauthorized Request
-        if (r.status_code == 401):
+        if r.status_code == 401:
             if resp_json.get('error') == 'invalid_token':
                 raise UnauthorizedOAuthTokenException
 
@@ -137,10 +157,10 @@ class XMattersConnector(BaseConnector):
             action_result.add_debug_data({'r_headers': r.headers})
 
         # There are just too many differences in the response to handle all of them in the same function
-        if ('json' in r.headers.get('Content-Type', '')):
+        if 'json' in r.headers.get('Content-Type', ''):
             return self._process_json_response(r, action_result)
 
-        if ('html' in r.headers.get('Content-Type', '')):
+        if 'html' in r.headers.get('Content-Type', ''):
             return self._process_html_response(r, action_result)
 
         # it's not an html or json, handle if it is a successfull empty reponse
@@ -176,18 +196,16 @@ class XMattersConnector(BaseConnector):
         return self._process_response(response, action_result)
 
     def _create_headers(self, h={}, **kwargs):
-        d = {}
-        d['Content-Type'] = 'application/json'
+        d = {'Content-Type': 'application/json'}
         d.update(h)
-        for k, v in kwargs.iteritems():
+        for k, v in kwargs.items():
             d[k] = v
         return d
 
     def _get_new_oauth_token(self, action_result):
         """Generate a new oauth token using the refresh token, if available
         """
-        params = {}
-        params['client_id'] = self._client_id
+        params = {'client_id': self._client_id}
         try:
             params['refresh_token'] = self._state['oauth_token']['refresh_token']
             params['grant_type'] = "refresh_token"
@@ -197,17 +215,17 @@ class XMattersConnector(BaseConnector):
             params['password'] = config[XM_CONFIG_PASSWORD]
             params['grant_type'] = "password"
 
-        headers = { 'Content-Type': 'application/x-www-form-urlencoded' }
+        headers = {'Content-Type': 'application/x-www-form-urlencoded'}
         ret_val, response_json = self._make_rest_call(action_result, '/api/xm/1/oauth2/token', data=params, headers=headers, method="post")
 
-        if (phantom.is_fail(ret_val) and params['grant_type'] == 'refresh_token'):
+        if phantom.is_fail(ret_val) and params['grant_type'] == 'refresh_token':
             self.debug_print("Unable to generate new key with refresh token")
             self._state = {}
             # Try again, using a password
             return self._get_new_oauth_token(action_result)
 
-        if (phantom.is_fail(ret_val)):
-            return RetVal(action_result.set_status(phantom.APP_ERROR, "Error in token request"), None)
+        if phantom.is_fail(ret_val):
+            return RetVal(action_result.set_status(phantom.APP_ERROR, XM_ERR_TOKEN_REQUEST), None)
 
         self._state['oauth_token'] = response_json
         self._state['retrieval_time'] = datetime.now().strftime(DT_STR_FORMAT)
@@ -215,15 +233,15 @@ class XMattersConnector(BaseConnector):
             return RetVal(phantom.APP_SUCCESS, response_json['access_token'])
         except Exception as e:
             self._state = {}
-            return RetVal(action_result.set_status(phantom.APP_ERROR, "Unable to parse access token", e), None)
+            return RetVal(action_result.set_status(phantom.APP_ERROR, XM_ERR_PARSE_ACCESS_TOKEN, e), None)
 
     def _get_oauth_token(self, action_result, force_new=False):
-        if (self._state.get('oauth_token') and not force_new):
+        if self._state.get('oauth_token') and not force_new:
             expires_in = self._state.get('oauth_token', {}).get('expires_in', 0)
             try:
                 diff = (datetime.now() - datetime.strptime(self._state['retrieval_time'], DT_STR_FORMAT)).total_seconds()
                 self.debug_print(diff)
-                if (diff < expires_in):
+                if diff < expires_in:
                     self.debug_print("Using old OAuth Token")
                     return RetVal(action_result.set_status(phantom.APP_SUCCESS), self._state['oauth_token']['access_token'])
             except KeyError:
@@ -237,10 +255,10 @@ class XMattersConnector(BaseConnector):
         auth = None
         headers = {}
         auth = None
-        if (self._use_token):
+        if self._use_token:
             self.save_progress("Connecting with OAuth Token")
             ret_val, oauth_token = self._get_oauth_token(action_result, force_new)
-            if (phantom.is_fail(ret_val)):
+            if phantom.is_fail(ret_val):
                 return ret_val, None, None
             self.save_progress("OAuth Token Retrieved")
             headers = self._create_headers({'Authorization': 'Bearer {0}'.format(oauth_token)})
@@ -263,11 +281,11 @@ class XMattersConnector(BaseConnector):
             if self._try_oauth:
                 self._try_oauth = False
                 ret_val, auth, headers = self._get_authorization_credentials(action_result, force_new=True)
-                if (phantom.is_fail(ret_val)):
+                if phantom.is_fail(ret_val):
                     return RetVal(phantom.APP_ERROR, None)
                 return self._make_rest_call_helper(
                     action_result, endpoint, params=params, headers=headers, method=method, auth=auth, **kwargs)
-            return RetVal(action_result.set_status(phantom.APP_ERROR, "Unable to authorize with OAuth token"), None)
+            return RetVal(action_result.set_status(phantom.APP_ERROR, XM_ERR_AUTHORIZE_OAUTH_TOKEN), None)
 
     def _format_params_to_query(self, params):
         """If you just pass with the params argument into the request, commas will be encoded to %2C
@@ -278,7 +296,7 @@ class XMattersConnector(BaseConnector):
            %1A is the code for substitute character, which seemed fitting and unused, though urlencode will
            encode this this into %251A.
         """
-        for k, v in params.iteritems():
+        for k, v in params.items():
             try:
                 if "%1A" in v:
                     self.debug_print("Check the _format_params_to_query method")
@@ -288,59 +306,62 @@ class XMattersConnector(BaseConnector):
                 # v is a boolean or something
                 pass
 
-        return urllib.urlencode(params).replace("%2C", ",").replace("%252C", "%2C")
+        return urllib.parse.urlencode(params).replace("%2C", ",").replace("%252C", "%2C")
 
     def _test_connectivity(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
         ret_val, auth, headers = self._get_authorization_credentials(action_result)
-        if (phantom.is_fail(ret_val)):
-            return self.set_status_save_progress(phantom.APP_ERROR, "Connectivity test failed")
+        if phantom.is_fail(ret_val):
+            return self.set_status_save_progress(phantom.APP_ERROR, XM_ERR_TEST_CONNECTIVITY_FAILED)
 
         self.save_progress('Making Request')
         # While there is a 'ping' endpoint, it will always return 200; it doesn't check auth at all
-        ret_val, response_json = self._make_rest_call_helper(action_result, '/api/xm/1/events?limit=1', headers=headers, auth=auth)
+        ret_val, response_json = self._make_rest_call_helper(action_result, XM_ENDPOINT_TEST_CONNECTIVITY, headers=headers, auth=auth)
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             if response_json:
                 reason = response_json.get('reason')
                 if reason:
                     self.save_progress("Error: {0}".format(reason))
-            return self.set_status(phantom.APP_ERROR, "Connectivity test failed")
+            return self.set_status(phantom.APP_ERROR, XM_ERR_TEST_CONNECTIVITY_FAILED)
         else:
-            return self.set_status_save_progress(phantom.APP_SUCCESS, "Connectivity test succeeded")
+            return self.set_status_save_progress(phantom.APP_SUCCESS, XM_SUCC_TEST_CONNECTIVITY)
 
     def _list_events(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
         params = {}
 
         ret_val, auth, headers = self._get_authorization_credentials(action_result)
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return ret_val
 
         # Prefer the next page if provided
         try:
             endpoint = param['page_uri']
         except KeyError:
-            regex = re.compile(r",\s+")  # Comma followed by whitespace
-            for k, v in param.iteritems():
+            for k, v in param.items():
                 if k == 'context':
                     continue
-                params[APP_PARAM_TO_API_PARAM_MAP.get(k, k)] = regex.sub(",", str(v))  # Remove any whitespace after commas
-            endpoint = '/api/xm/1/events'
+                value_list = [x.strip() for x in str(v).split(',') if x]
+                params[APP_PARAM_TO_API_PARAM_MAP.get(k, k)] = ','.join(value_list)  # Remove any whitespace after commas
+            endpoint = XM_ENDPOINT_LIST_EVENTS
             endpoint += '?{0}'.format(self._format_params_to_query(params))
             self.debug_print(endpoint)
 
         ret_val, response_json = self._make_rest_call_helper(action_result, endpoint, headers=headers, auth=auth)
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return ret_val
 
         action_result.add_data(response_json)
+
+        summary = action_result.update_summary({})
+        summary['events_returned'] = response_json.get('count')
         try:
-            action_result.set_summary({'next_page': response_json['links']['next']})
+            summary['next_page'] = response_json['links']['next']
         except KeyError:
             pass
-        return action_result.set_status(phantom.APP_SUCCESS)
+        return action_result.set_status(phantom.APP_SUCCESS, XM_LIST_EVENTS_SUCCESS)
 
     def _initiate_event(self, param):
         """This API is going to be depreciated 'soon'. If this action suddenly and/or violently
@@ -348,16 +369,16 @@ class XMattersConnector(BaseConnector):
         """
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        endpoint = "/reapi/2015-04-01/forms/{0}/triggers"  # noqa
+        endpoint = XM_ENDPOINT_TRIGGER_EVENT  # noqa
 
         body = {}  # noqa
 
         # Oauth doesn't work with this endpoint
         ret_val, auth, headers = self._get_authorization_credentials(action_result)
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return ret_val
 
-        for k, v in param.iteritems():
+        for k, v in param.items():
             if k == 'context':
                 continue
             elif k == 'form_uuid':
@@ -372,28 +393,31 @@ class XMattersConnector(BaseConnector):
                 except Exception as e:
                     self.debug_print(k)
                     self.debug_print(v)
-                    return action_result.set_status(phantom.APP_ERROR, "Unable to parse parameter '{0}' to json: {1}".format(k, str(e)))
+                    error_msg = self._get_error_message_from_exception(e)
+                    return action_result.set_status(phantom.APP_ERROR, "Unable to parse parameter '{0}' to json: {1}".format(k, error_msg))
             else:
                 body[k] = v
 
         self.debug_print(body)
         ret_val, response_json = self._make_rest_call_helper(action_result, endpoint, json=body, headers=headers, auth=auth, method="post")
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return ret_val
 
         action_result.add_data(response_json)
-        return action_result.set_status(phantom.APP_SUCCESS)
+        summary = action_result.update_summary({})
+        summary['event_id'] = response_json.get('id')
+        return action_result.set_status(phantom.APP_SUCCESS, XM_CREATE_EVENT_SUCCESS)
 
     def _get_event(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
         params = {}
 
         event_id = param['event_id']
-        endpoint = '/api/xm/1/events/{0}'.format(event_id)
+        endpoint = XM_ENDPOINT_GET_EVENT.format(event_id)
 
         ret_val, auth, headers = self._get_authorization_credentials(action_result)
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return ret_val
 
         embed = []
@@ -410,75 +434,84 @@ class XMattersConnector(BaseConnector):
         endpoint += '?{0}'.format(self._format_params_to_query(params))
         ret_val, response_json = self._make_rest_call_helper(action_result, endpoint, headers=headers, auth=auth)
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return ret_val
 
         action_result.add_data(response_json)
-        return action_result.set_status(phantom.APP_SUCCESS)
+        summary = action_result.update_summary({})
+        summary['event_id'] = event_id
+        return action_result.set_status(phantom.APP_SUCCESS, XM_GET_EVENT_SUCCESS)
 
     def _update_event(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
         body = {}
 
         ret_val, auth, headers = self._get_authorization_credentials(action_result)
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return ret_val
 
-        endpoint = '/api/xm/1/events'
-
-        body['id'] = param['event_id']
+        endpoint = XM_ENDPOINT_UPDATE_EVENT
+        event_id = param['event_id']
+        body['id'] = event_id
         body['status'] = param['status']
 
         ret_val, response_json = self._make_rest_call_helper(action_result, endpoint, headers=headers, json=body, auth=auth, method="post")
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return ret_val
 
         action_result.add_data(response_json)
-        return action_result.set_status(phantom.APP_SUCCESS)
+        summary = action_result.update_summary({})
+        summary['event_id'] = event_id
+
+        return action_result.set_status(phantom.APP_SUCCESS, XM_UPDATE_EVENT_SUCCESS)
 
     def _list_people(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
         params = {}
 
         ret_val, auth, headers = self._get_authorization_credentials(action_result)
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return ret_val
 
         try:
             endpoint = param['page_uri']
         except KeyError:
             regex = re.compile(r",\s+")
-            for k, v in param.iteritems():
+            for k, v in param.items():
                 if k == 'context':
                     continue
                 if k == 'embed_roles':
                     params['embed'] = 'roles'
                 params[APP_PARAM_TO_API_PARAM_MAP.get(k, k)] = regex.sub(",", str(v))
-            endpoint = '/api/xm/1/people'
+            endpoint = XM_ENDPOINT_LIST_PEOPLE
             endpoint += '?{0}'.format(self._format_params_to_query(params))
 
         ret_val, response_json = self._make_rest_call_helper(action_result, endpoint, headers=headers, auth=auth)
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return ret_val
 
         action_result.add_data(response_json)
+
+        summary = action_result.update_summary({})
+        summary['people_returned'] = response_json.get('count')
         try:
-            action_result.set_summary({'next_page': response_json['links']['next']})
+            summary['next_page'] = response_json['links']['next']
         except KeyError:
             pass
-        return action_result.set_status(phantom.APP_SUCCESS)
+
+        return action_result.set_status(phantom.APP_SUCCESS, XM_LIST_PEOPLE_SUCCESS)
 
     def _get_person(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
         params = {}
 
         person_id = param['identifier']
-        endpoint = '/api/xm/1/people/{0}'.format(person_id)
+        endpoint = XM_ENDPOINT_GET_PEOPLE.format(person_id)
 
         ret_val, auth, headers = self._get_authorization_credentials(action_result)
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return ret_val
 
         if param.get('embed_roles', False):
@@ -486,29 +519,31 @@ class XMattersConnector(BaseConnector):
 
         ret_val, response_json = self._make_rest_call_helper(action_result, endpoint, params=params, headers=headers, auth=auth)
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return ret_val
 
         action_result.add_data(response_json)
-        return action_result.set_status(phantom.APP_SUCCESS)
+        summary = action_result.update_summary({})
+        summary['person_id'] = person_id
+        return action_result.set_status(phantom.APP_SUCCESS, XM_GET_PERSON_SUCCESS)
 
     def handle_action(self, param):
         result = None
         action = self.get_action_identifier()
 
-        if (action == phantom.ACTION_ID_TEST_ASSET_CONNECTIVITY):
+        if action == phantom.ACTION_ID_TEST_ASSET_CONNECTIVITY:
             result = self._test_connectivity(param)
-        if (action == self.ACTION_ID_LIST_EVENTS):
+        if action == self.ACTION_ID_LIST_EVENTS:
             result = self._list_events(param)
-        if (action == self.ACTION_ID_GET_EVENT):
+        if action == self.ACTION_ID_GET_EVENT:
             result = self._get_event(param)
-        if (action == self.ACTION_ID_UPDATE_EVENT):
+        if action == self.ACTION_ID_UPDATE_EVENT:
             result = self._update_event(param)
-        if (action == self.ACTION_ID_LIST_PEOPLE):
+        if action == self.ACTION_ID_LIST_PEOPLE:
             result = self._list_people(param)
-        if (action == self.ACTION_ID_GET_PERSON):
+        if action == self.ACTION_ID_GET_PERSON:
             result = self._get_person(param)
-        if (action == self.ACTION_ID_INITIATE_EVENT):
+        if action == self.ACTION_ID_INITIATE_EVENT:
             result = self._initiate_event(param)
 
         return result
@@ -520,8 +555,8 @@ if __name__ == '__main__':
     import pudb
     pudb.set_trace()
 
-    if (len(sys.argv) < 2):
-        print "No test json specified as input"
+    if len(sys.argv) < 2:
+        print("No test json specified as input")
         exit(0)
 
     with open(sys.argv[1]) as f:
@@ -532,6 +567,6 @@ if __name__ == '__main__':
         connector = XMattersConnector()
         connector.print_progress_message = True
         ret_val = connector._handle_action(json.dumps(in_json), None)
-        print json.dumps(json.loads(ret_val), indent=4)
+        print(json.dumps(json.loads(ret_val), indent=4))
 
     exit(0)
