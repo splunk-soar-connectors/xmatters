@@ -2282,17 +2282,17 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.summary.next_page",
-                    "data_type": "string",
-                    "example_values": [
-                        "/api/xm/1/events?offset=4&limit=4"
-                    ]
-                },
-                {
                     "data_path": "action_result.summary.events_returned",
                     "data_type": "string",
                     "example_values": [
                         7
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.next_page",
+                    "data_type": "string",
+                    "example_values": [
+                        "/api/xm/1/events?offset=4&limit=4"
                     ]
                 },
                 {
@@ -2314,6 +2314,722 @@
                     "data_type": "numeric",
                     "example_values": [
                         "1"
+                    ]
+                }
+            ],
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "list groups",
+            "description": "Get information about multiple groups matching a property name/value",
+            "type": "investigate",
+            "identifier": "list_groups",
+            "read_only": true,
+            "parameters": {
+                "search_group": {
+                    "description": "Search term will check in name and description of groups. Separate multiple values with either space or a + sign",
+                    "data_type": "string",
+                    "order": 0
+                },
+                "members": {
+                    "description": "The targetName or id of users, dynamic teams or devices that are part of a group. Separate multiple values with commma",
+                    "data_type": "string",
+                    "order": 1
+                },
+                "status": {
+                    "description": "Status of the group",
+                    "data_type": "string",
+                    "value_list": [
+                        "",
+                        "ACTIVE",
+                        "INACTIVE"
+                    ],
+                    "order": 2
+                },
+                "embed_observers": {
+                    "description": "Includes a list of observers for a group",
+                    "data_type": "boolean",
+                    "order": 3
+                },
+                "embed_supervisors": {
+                    "description": "Includes a list of supervisors for a group",
+                    "data_type": "boolean",
+                    "order": 4
+                }
+            },
+            "render": {
+                "width": 12,
+                "title": "List Groups",
+                "type": "table",
+                "height": 5
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.embed_observers",
+                    "data_type": "boolean",
+                    "example_values": [
+                        "True",
+                        "False"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.embed_supervisors",
+                    "data_type": "boolean",
+                    "example_values": [
+                        "True",
+                        "False"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.members",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.search_group",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "ACTIVE",
+                        "INACTIVE"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.count",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.allowDuplicates",
+                    "data_type": "boolean",
+                    "example_value": true
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.created",
+                    "data_type": "string",
+                    "example_value": "2021-12-15T08:12:52.350Z"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.description",
+                    "data_type": "string",
+                    "example_value": "testing"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.externallyOwned",
+                    "data_type": "boolean",
+                    "example_value": false
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.groupType",
+                    "data_type": "string",
+                    "example_value": "ON_CALL"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.id",
+                    "data_type": "string",
+                    "example_value": "3d2bb12b-8eb6-42be-8aea-1c46cb1db91e"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.links.self",
+                    "data_type": "string",
+                    "example_value": "/api/xm/1/groups/3d2bb12b-8eb6-42be-8aea-1c46cb1db91e"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.observedByAll",
+                    "data_type": "boolean",
+                    "example_value": true
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.observers.count",
+                    "data_type": "numeric",
+                    "example_value": 3
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.observers.data.*.description",
+                    "data_type": "string",
+                    "example_value": "Has all permissions and has access to the developer tab."
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.observers.data.*.id",
+                    "data_type": "string",
+                    "example_value": "8d7b84a9-1c40-4f08-a55e-c96b25b067ee"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.observers.data.*.name",
+                    "data_type": "string",
+                    "example_value": "Company Supervisor"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.observers.total",
+                    "data_type": "numeric",
+                    "example_value": 3
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.recipientType",
+                    "data_type": "string",
+                    "example_value": "GROUP"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.status",
+                    "data_type": "string",
+                    "example_value": "ACTIVE"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.supervisors.count",
+                    "data_type": "numeric",
+                    "example_value": 1
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.supervisors.data.*.externallyOwned",
+                    "data_type": "boolean",
+                    "example_value": false
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.supervisors.data.*.firstName",
+                    "data_type": "string",
+                    "example_value": "Herman"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.supervisors.data.*.id",
+                    "data_type": "string",
+                    "example_value": "440bbb02-07ab-43ea-b524-b1db12492b1b"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.supervisors.data.*.language",
+                    "data_type": "string",
+                    "example_value": "en"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.supervisors.data.*.lastLogin",
+                    "data_type": "string",
+                    "example_value": "2021-12-16T11:18:35.556Z"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.supervisors.data.*.lastName",
+                    "data_type": "string",
+                    "example_value": "Edwards"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.supervisors.data.*.licenseType",
+                    "data_type": "string",
+                    "example_value": "FULL_USER"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.supervisors.data.*.links.self",
+                    "data_type": "string",
+                    "example_value": "/api/xm/1/people/440bbb02-07ab-43ea-b524-b1db12492b1b"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.supervisors.data.*.recipientType",
+                    "data_type": "string",
+                    "example_value": "PERSON"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.supervisors.data.*.site.id",
+                    "data_type": "string",
+                    "example_value": "4b05dd34-8382-4021-93cd-2ca6b977e546"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.supervisors.data.*.site.links.self",
+                    "data_type": "string",
+                    "example_value": "/api/xm/1/sites/4b05dd34-8382-4021-93cd-2ca6b977e546"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.supervisors.data.*.site.name",
+                    "data_type": "string",
+                    "example_value": "Default Site"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.supervisors.data.*.status",
+                    "data_type": "string",
+                    "example_value": "ACTIVE"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.supervisors.data.*.targetName",
+                    "data_type": "string",
+                    "example_value": "phantomlab"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.supervisors.data.*.timezone",
+                    "data_type": "string",
+                    "example_value": "US/Pacific"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.supervisors.data.*.webLogin",
+                    "data_type": "string",
+                    "example_value": "phantomlab@splunk.com"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.supervisors.data.*.whenCreated",
+                    "data_type": "string",
+                    "example_value": "2021-07-01T06:19:56.439Z"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.supervisors.data.*.whenUpdated",
+                    "data_type": "string",
+                    "example_value": "2021-12-16T11:18:35.558Z"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.supervisors.links.self",
+                    "data_type": "string",
+                    "example_value": "/api/xm/1/groups/3d2bb12b-8eb6-42be-8aea-1c46cb1db91e/supervisors?offset=0&limit=100"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.supervisors.total",
+                    "data_type": "numeric",
+                    "example_value": 1
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.targetName",
+                    "data_type": "string",
+                    "example_value": "Test Group"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.useDefaultDevices",
+                    "data_type": "boolean",
+                    "example_value": true
+                },
+                {
+                    "data_path": "action_result.data.*.links.self",
+                    "data_type": "string",
+                    "example_value": "/api/xm/1/groups?search=ce423b4a-1ecd-48f9-a4ac-71cef75f9875&offset=0&search_group=ce423b4a-1ecd-48f9-a4ac-71cef75f9875&limit=100&embed=observers%2Csupervisors&embed_supervisors=True&embed_observers=True"
+                },
+                {
+                    "data_path": "action_result.data.*.total",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.summary.events_returned",
+                    "data_type": "numeric",
+                    "example_value": 4
+                },
+                {
+                    "data_path": "action_result.summary.groups_returned",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "who is oncall",
+            "description": "Get iinformation about who is on call over a given timeframe",
+            "type": "investigate",
+            "identifier": "who_is_oncall",
+            "read_only": true,
+            "parameters": {
+                "groups": {
+                    "description": "Name or id of a group. Separate multiple values with commma",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 0
+                },
+                "members_per_shift": {
+                    "description": "The number of shift members to include (max 100)",
+                    "data_type": "numeric",
+                    "order": 1
+                },
+                "from": {
+                    "description": "Date time value in UTC format (Eg. 2017-02-23T04:00:00Z)",
+                    "data_type": "string",
+                    "order": 2
+                },
+                "to": {
+                    "description": "Date time value in UTC format (Eg. 2017-02-26T04:00:00Z)",
+                    "data_type": "string",
+                    "order": 3
+                },
+                "embed_shift": {
+                    "description": "Includes shift details",
+                    "data_type": "boolean",
+                    "order": 4
+                },
+                "embed_owner": {
+                    "description": "Includes members owner details",
+                    "data_type": "boolean",
+                    "order": 5
+                }
+            },
+            "render": {
+                "width": 12,
+                "title": "Get Who is Oncall",
+                "type": "table",
+                "height": 5
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.embed_owner",
+                    "data_type": "boolean",
+                    "example_values": [
+                        "True",
+                        "False"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.embed_shift",
+                    "data_type": "boolean",
+                    "example_values": [
+                        "True",
+                        "False"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.from",
+                    "data_type": "string",
+                    "example_value": "2021-12-15T23:00:01Z"
+                },
+                {
+                    "data_path": "action_result.parameter.groups",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.members_per_shift",
+                    "data_type": "numeric",
+                    "example_value": 1
+                },
+                {
+                    "data_path": "action_result.parameter.to",
+                    "data_type": "string",
+                    "example_value": "2021-12-16T15:00:01Z"
+                },
+                {
+                    "data_path": "action_result.data.*.count",
+                    "data_type": "numeric",
+                    "example_value": 1
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.end",
+                    "data_type": "string",
+                    "example_value": "2021-12-17T05:00:00Z"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.group.groupType",
+                    "data_type": "string",
+                    "example_value": "ON_CALL"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.group.id",
+                    "data_type": "string",
+                    "example_value": "5b0c4986-8d1c-43be-9b48-e57a52e8f548"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.group.links.self",
+                    "data_type": "string",
+                    "example_value": "/api/xm/1/groups/5b0c4986-8d1c-43be-9b48-e57a52e8f548"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.group.recipientType",
+                    "data_type": "string",
+                    "example_value": "GROUP"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.group.targetName",
+                    "data_type": "string",
+                    "example_value": "Service-Team-2"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.count",
+                    "data_type": "numeric",
+                    "example_value": 2
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.data.*.delay",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.data.*.escalationType",
+                    "data_type": "string",
+                    "example_value": "NONE"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.data.*.member.allowDuplicates",
+                    "data_type": "boolean",
+                    "example_value": true
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.data.*.member.created",
+                    "data_type": "string",
+                    "example_value": "2021-07-01T06:19:56.439Z"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.data.*.member.description",
+                    "data_type": "string",
+                    "example_value": "Example group showing rotating daytime, evening and weekend shifts"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.data.*.member.externallyOwned",
+                    "data_type": "boolean",
+                    "example_value": false
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.data.*.member.firstName",
+                    "data_type": "string",
+                    "example_value": "xLeonardo"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.data.*.member.groupType",
+                    "data_type": "string",
+                    "example_value": "ON_CALL"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.data.*.member.id",
+                    "data_type": "string",
+                    "example_value": "c5a63f2f-b843-4710-a763-a6cce730c8a3"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.data.*.member.language",
+                    "data_type": "string",
+                    "example_value": "en"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.data.*.member.lastLogin",
+                    "data_type": "string",
+                    "example_value": "2021-12-16T10:25:05.634Z"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.data.*.member.lastName",
+                    "data_type": "string",
+                    "example_value": "Dicapri"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.data.*.member.licenseType",
+                    "data_type": "string",
+                    "example_value": "FULL_USER"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.data.*.member.links.self",
+                    "data_type": "string",
+                    "example_value": "/api/xm/1/people/c5a63f2f-b843-4710-a763-a6cce730c8a3"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.data.*.member.observedByAll",
+                    "data_type": "boolean",
+                    "example_value": true
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.data.*.member.recipientType",
+                    "data_type": "string",
+                    "example_value": "PERSON"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.data.*.member.site.id",
+                    "data_type": "string",
+                    "example_value": "4b05dd34-8382-4021-93cd-2ca6b977e546"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.data.*.member.site.links.self",
+                    "data_type": "string",
+                    "example_value": "/api/xm/1/sites/4b05dd34-8382-4021-93cd-2ca6b977e546"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.data.*.member.site.name",
+                    "data_type": "string",
+                    "example_value": "Default Site"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.data.*.member.status",
+                    "data_type": "string",
+                    "example_value": "ACTIVE"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.data.*.member.targetName",
+                    "data_type": "string",
+                    "example_value": "ldicapri"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.data.*.member.timezone",
+                    "data_type": "string",
+                    "example_value": "US/Eastern"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.data.*.member.useDefaultDevices",
+                    "data_type": "boolean",
+                    "example_value": true
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.data.*.member.webLogin",
+                    "data_type": "string",
+                    "example_value": "lrn83NIC"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.data.*.member.whenCreated",
+                    "data_type": "string",
+                    "example_value": "2021-07-01T06:19:56.439Z"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.data.*.member.whenUpdated",
+                    "data_type": "string",
+                    "example_value": "2021-07-01T06:19:56.439Z"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.data.*.position",
+                    "data_type": "numeric",
+                    "example_value": 1
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.links.next",
+                    "data_type": "string",
+                    "example_value": "/api/xm/1/groups/ce423b4a-1ecd-48f9-a4ac-71cef75f9875/shifts/ed6fbddc-959c-4534-b932-e661a0ac01a3/occurrences/2021-12-15T22:00:00.000Z/members?offset=1&limit=1"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.links.self",
+                    "data_type": "string",
+                    "example_value": "/api/xm/1/groups/5b0c4986-8d1c-43be-9b48-e57a52e8f548/shifts/6c7eba59-b9a5-4b57-9322-67722fe9ce36/occurrences/2021-12-16T05:00:00.000Z/members?offset=0&limit=3"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.members.total",
+                    "data_type": "numeric",
+                    "example_value": 2
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.shift.end",
+                    "data_type": "string",
+                    "example_value": "2015-08-06T04:00:00.000Z"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.shift.group.groupType",
+                    "data_type": "string",
+                    "example_value": "ON_CALL"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.shift.group.id",
+                    "data_type": "string",
+                    "example_value": "5b0c4986-8d1c-43be-9b48-e57a52e8f548"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.shift.group.links.self",
+                    "data_type": "string",
+                    "example_value": "/api/xm/1/groups/5b0c4986-8d1c-43be-9b48-e57a52e8f548"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.shift.group.recipientType",
+                    "data_type": "string",
+                    "example_value": "GROUP"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.shift.group.targetName",
+                    "data_type": "string",
+                    "example_value": "Service-Team-2"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.shift.id",
+                    "data_type": "string",
+                    "example_value": "6c7eba59-b9a5-4b57-9322-67722fe9ce36"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.shift.links.self",
+                    "data_type": "string",
+                    "example_value": "/api/xm/1/groups/5b0c4986-8d1c-43be-9b48-e57a52e8f548/shifts/6c7eba59-b9a5-4b57-9322-67722fe9ce36"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.shift.name",
+                    "data_type": "string",
+                    "example_value": "Weekday"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.shift.recurrence.end.endBy",
+                    "data_type": "string",
+                    "example_value": "NEVER"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.shift.recurrence.frequency",
+                    "data_type": "string",
+                    "example_value": "EVERY_WEEKDAY"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.shift.recurrence.repeatEvery",
+                    "data_type": "numeric",
+                    "example_value": 1
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.shift.start",
+                    "data_type": "string",
+                    "example_value": "2015-08-05T04:00:00.000Z"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.shift.timezone",
+                    "data_type": "string",
+                    "example_value": "US/Eastern"
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.start",
+                    "data_type": "string",
+                    "example_value": "2021-12-16T05:00:00Z"
+                },
+                {
+                    "data_path": "action_result.data.*.links.self",
+                    "data_type": "string",
+                    "example_value": "/api/xm/1/on-call?limit=100&groups=5b0c4986-8d1c-43be-9b48-e57a52e8f548&embed=shift&offset=0&embed_owner=False&embed_shift=True"
+                },
+                {
+                    "data_path": "action_result.data.*.total",
+                    "data_type": "numeric",
+                    "example_value": 1
+                },
+                {
+                    "data_path": "action_result.summary.members_on_call",
+                    "data_type": "numeric",
+                    "example_value": 2
+                },
+                {
+                    "data_path": "action_result.summary.oncall_returned",
+                    "data_type": "numeric",
+                    "example_value": 1
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
                     ]
                 }
             ],
