@@ -11,7 +11,7 @@
     "product_vendor": "xMatters",
     "product_name": "xMatters",
     "product_version_regex": ".*",
-    "min_phantom_version": "4.9.39220",
+    "min_phantom_version": "5.0.0",
     "logo": "logo_xmatters.svg",
     "logo_dark": "logo_xmatters_dark.svg",
     "license": "Copyright (c) 2017-2021 Splunk Inc.",
@@ -2641,7 +2641,7 @@
             "versions": "EQ(*)"
         },
         {
-            "action": "who is oncall",
+            "action": "get oncall user",
             "description": "Get iinformation about who is on call over a given timeframe",
             "type": "investigate",
             "identifier": "who_is_oncall",
