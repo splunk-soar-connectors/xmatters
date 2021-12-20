@@ -602,6 +602,14 @@ class XMattersConnector(BaseConnector):
         embed = ",".join(embed)
         params['embed'] = embed
 
+        timeframe = []
+        if param.get('from'):
+            timeframe.append("from")
+        if param.get('to'):
+            timeframe.append("shift")
+        if len(timeframe) == 1:
+            return action_result.set_status(phantom.APP_ERROR, XM_WHO_IS_ONCALL_FAILURE)
+
         ret_val, auth, headers = self._get_authorization_credentials(action_result)
         if phantom.is_fail(ret_val):
             return ret_val

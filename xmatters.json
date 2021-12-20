@@ -2656,6 +2656,7 @@
                 "members_per_shift": {
                     "description": "The number of shift members to include (max 100)",
                     "data_type": "numeric",
+                    "default": 3,
                     "order": 1
                 },
                 "from": {
