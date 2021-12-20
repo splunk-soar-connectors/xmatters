@@ -1,2 +1,2 @@
 **Unreleased**
-* Added new action 'list groups' and 'who is on call'. [PAPP-4148]
+* Added support for the 'list groups' and 'get oncall user' actions [PAPP-4148]

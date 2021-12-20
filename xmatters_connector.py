@@ -59,7 +59,7 @@ class XMattersConnector(BaseConnector):
     ACTION_ID_GET_PERSON = "get_person"
     ACTION_ID_INITIATE_EVENT = "initiate_event"
     ACTION_ID_LIST_GROUPS = "list_groups"
-    ACTION_ID_WHO_IS_ONCALL = "who_is_oncall"
+    ACTION_ID_GET_ONCALL_USER = "get_oncall_user"
 
     def __init__(self):
         super(XMattersConnector, self).__init__()
@@ -588,7 +588,7 @@ class XMattersConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS, XM_LIST_GROUPS_SUCCESS)
 
-    def _who_is_oncall(self, param):
+    def _get_oncall_user(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
         params = {}
 
@@ -665,8 +665,8 @@ class XMattersConnector(BaseConnector):
             result = self._initiate_event(param)
         if action == self.ACTION_ID_LIST_GROUPS:
             result = self._list_groups(param)
-        if action == self.ACTION_ID_WHO_IS_ONCALL:
-            result = self._who_is_oncall(param)
+        if action == self.ACTION_ID_GET_ONCALL_USER:
+            result = self._get_oncall_user(param)
 
         return result
 
@@ -680,7 +680,7 @@ if __name__ == '__main__':
 
     if len(sys.argv) < 2:
         print("No test json specified as input")
-        exit(0)
+        sys.exit(0)
 
     with open(sys.argv[1]) as f:
         in_json = f.read()
@@ -692,4 +692,4 @@ if __name__ == '__main__':
         ret_val = connector._handle_action(json.dumps(in_json), None)
         print(json.dumps(json.loads(ret_val), indent=4))
 
-    exit(0)
+    sys.exit(0)

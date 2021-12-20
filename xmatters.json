@@ -5,13 +5,14 @@
     "type": "devops",
     "publisher": "Splunk",
     "main_module": "xmatters_connector.py",
-    "app_version": "2.0.2",
+    "app_version": "2.1.0",
     "utctime_updated": "2021-07-23T07:02:13.000000Z",
     "package_name": "phantom_xmatters",
     "product_vendor": "xMatters",
     "product_name": "xMatters",
     "product_version_regex": ".*",
     "min_phantom_version": "5.0.0",
+    "fips_compliant": true,
     "logo": "logo_xmatters.svg",
     "logo_dark": "logo_xmatters_dark.svg",
     "license": "Copyright (c) 2017-2021 Splunk Inc.",
@@ -2321,7 +2322,7 @@
         },
         {
             "action": "list groups",
-            "description": "Get information about multiple groups matching a property name/value",
+            "description": "Get information about multiple groups matching a property.",
             "type": "investigate",
             "identifier": "list_groups",
             "read_only": true,
@@ -2390,7 +2391,8 @@
                 },
                 {
                     "data_path": "action_result.parameter.members",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": "1"
                 },
                 {
                     "data_path": "action_result.parameter.search_group",
@@ -2642,9 +2644,9 @@
         },
         {
             "action": "get oncall user",
-            "description": "Get iinformation about who is on call over a given timeframe",
+            "description": "Get information about who is on call over a given timeframe",
             "type": "investigate",
-            "identifier": "who_is_oncall",
+            "identifier": "get_oncall_user",
             "read_only": true,
             "parameters": {
                 "groups": {
