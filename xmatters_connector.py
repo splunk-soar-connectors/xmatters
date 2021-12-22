@@ -586,7 +586,7 @@ class XMattersConnector(BaseConnector):
         summary = action_result.update_summary({})
         summary['groups_returned'] = response_json.get('count')
 
-        return action_result.set_status(phantom.APP_SUCCESS, XM_LIST_GROUPS_SUCCESS)
+        return action_result.set_status(phantom.APP_SUCCESS, "Num of groups found: {}".format(response_json.get('count')))
 
     def _get_oncall_user(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))

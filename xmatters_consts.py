@@ -40,7 +40,7 @@ XM_WHO_IS_ONCALL_SUCCESS = "Successfully retrieved who is on call"
 XM_UPDATE_EVENT_SUCCESS = "Successfully updated event"
 XM_LIST_PEOPLE_SUCCESS = "Users retrieved successfully"
 XM_GET_PERSON_SUCCESS = "Successfully retrieved user"
-XM_WHO_IS_ONCALL_FAILURE = "Provide both from and to value for timeframe."
+XM_WHO_IS_ONCALL_FAILURE = "Provide both from and to value for timeframe"
 
 XM_ERR_TOKEN_REQUEST = "Error in token request"
 XM_ERR_PARSE_ACCESS_TOKEN = "Unable to parse access token"
