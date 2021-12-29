@@ -581,7 +581,11 @@ class XMattersConnector(BaseConnector):
         if phantom.is_fail(ret_val):
             return ret_val
 
-        action_result.add_data(response_json)
+        if response_json is None:
+            return action_result.get_status()
+
+        for res in response_json['data']:
+            action_result.add_data(res)
 
         summary = action_result.update_summary({})
         summary['groups_returned'] = response_json.get('count')
@@ -635,7 +639,11 @@ class XMattersConnector(BaseConnector):
         if phantom.is_fail(ret_val):
             return ret_val
 
-        action_result.add_data(response_json)
+        if response_json is None:
+            return action_result.get_status()
+
+        for res in response_json['data']:
+            action_result.add_data(res)
 
         summary = action_result.update_summary({})
         summary['members_on_call'] = response_json['data'][0]['members']['count']
