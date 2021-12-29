@@ -2369,10 +2369,7 @@
                 },
                 {
                     "data_path": "action_result.message",
-                    "data_type": "string",
-                    "example_values": [
-                        ""
-                    ]
+                    "data_type": "string"
                 },
                 {
                     "data_path": "summary.total_objects",
@@ -2391,27 +2388,36 @@
                 {
                     "data_path": "action_result.parameter.search_group",
                     "data_type": "string",
-                    "example_value": ""
+                    "example_value": "Test"
                 },
                 {
                     "data_path": "action_result.parameter.members",
                     "data_type": "string",
-                    "example_value": ""
+                    "example_value": "phantomlab"
                 },
                 {
                     "data_path": "action_result.parameter.status",
                     "data_type": "string",
-                    "example_value": ""
+                    "example_value": [
+                        "ACTIVE",
+                        "INACTIVE"
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.embed_observers",
                     "data_type": "boolean",
-                    "example_value": ""
+                    "example_value": [
+                        false,
+                        true
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.embed_supervisors",
                     "data_type": "boolean",
-                    "example_value": ""
+                    "example_value": [
+                        false,
+                        true
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.groups_returned",
@@ -2686,7 +2692,7 @@
                     "data_path": "action_result.message",
                     "data_type": "string",
                     "example_values": [
-                        ""
+                        "Successfully retrieved who is on call"
                     ]
                 },
                 {
@@ -2706,7 +2712,7 @@
                 {
                     "data_path": "action_result.parameter.groups",
                     "data_type": "string",
-                    "example_value": "",
+                    "example_value": "Test",
                     "contains": [
                         "xmatters group id",
                         "xmatters group name"
@@ -2715,27 +2721,33 @@
                 {
                     "data_path": "action_result.parameter.members_per_shift",
                     "data_type": "numeric",
-                    "example_value": ""
+                    "example_value": 1
                 },
                 {
                     "data_path": "action_result.parameter.from",
                     "data_type": "string",
-                    "example_value": ""
+                    "example_value": "2021-12-30T00:00:01Z"
                 },
                 {
                     "data_path": "action_result.parameter.to",
                     "data_type": "string",
-                    "example_value": ""
+                    "example_value": "2021-12-30T14:00:01Z"
                 },
                 {
                     "data_path": "action_result.parameter.embed_shift",
                     "data_type": "boolean",
-                    "example_value": ""
+                    "example_value": [
+                        false,
+                        true
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.embed_owner",
                     "data_type": "boolean",
-                    "example_value": ""
+                    "example_value": [
+                        false,
+                        true
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.members_on_call",
