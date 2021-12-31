@@ -646,7 +646,12 @@ class XMattersConnector(BaseConnector):
             action_result.add_data(res)
 
         summary = action_result.update_summary({})
-        summary['members_on_call'] = response_json['data'][0]['members']['count']
+    
+        try:
+            summary['members_on_call'] = response_json['data'][0]['members']['count']
+        except KeyError:
+            summary['members_on_call'] = 'No shifts found for the given input parameters'
+
         try:
             summary['next_page'] = response_json['data'][0]['members']['links']['next']
         except KeyError:
