@@ -5,8 +5,8 @@
     "type": "devops",
     "publisher": "Splunk",
     "main_module": "xmatters_connector.py",
-    "app_version": "2.1.1",
-    "utctime_updated": "2021-12-30T02:32:46.000000Z",
+    "app_version": "2.1.0",
+    "utctime_updated": "2021-07-23T07:02:13.000000Z",
     "package_name": "phantom_xmatters",
     "product_vendor": "xMatters",
     "product_name": "xMatters",
@@ -18,7 +18,7 @@
     "license": "Copyright (c) 2017-2021 Splunk Inc.",
     "python_version": "3",
     "latest_tested_versions": [
-        "api v1 tested on 21 July, 2021"
+        "api v1 tested on 31 December, 2021"
     ],
     "configuration": {
         "base_url": {
@@ -2798,8 +2798,9 @@
                     "data_path": "action_result.data.*.shift.name",
                     "data_type": "string",
                     "example_value": "Default Shift",
-                    "column_name": "Shift Name",
-                    "column_order": 0
+                    "contains": [
+                        "shift name"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.shift.links.self",
@@ -2870,8 +2871,9 @@
                     "data_path": "action_result.data.*.members.data.*.member.lastName",
                     "data_type": "string",
                     "example_value": "Bored",
-                    "column_name": "Member Last Name",
-                    "column_order": 3
+                    "contains": [
+                        "member last name"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.members.data.*.member.timezone",
@@ -2887,15 +2889,17 @@
                     "data_path": "action_result.data.*.members.data.*.member.firstName",
                     "data_type": "string",
                     "example_value": "xHarrison",
-                    "column_name": "Member First Name",
-                    "column_order": 2
+                    "contains": [
+                        "member first name"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.members.data.*.member.targetName",
                     "data_type": "string",
                     "example_value": "hbored",
-                    "column_name": "Member Target Name",
-                    "column_order": 1
+                    "contains": [
+                        "member target name"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.members.data.*.member.licenseType",
@@ -2991,13 +2995,131 @@
                     "data_path": "action_result.data.*.members.links.next",
                     "data_type": "string",
                     "example_value": "/api/xm/1/groups/ce423b4a-1ecd-48f9-a4ac-71cef75f9875/shifts/ed6fbddc-959c-4534-b932-e661a0ac01a3/occurrences/2021-12-28T22:00:00.000Z/members?offset=1&limit=1"
+                },
+                {
+                    "data_path": "action_result.data.*.members.data.*.member.lastLogin",
+                    "data_type": "string",
+                    "example_value": "2021-12-31T05:19:42.930Z"
+                },
+                {
+                    "data_path": "action_result.data.*.members.data.*.member.created",
+                    "data_type": "string",
+                    "example_value": "2021-07-01T06:19:56.439Z"
+                },
+                {
+                    "data_path": "action_result.data.*.members.data.*.member.groupType",
+                    "data_type": "string",
+                    "example_value": "ON_CALL"
+                },
+                {
+                    "data_path": "action_result.data.*.members.data.*.member.description",
+                    "data_type": "string",
+                    "example_value": "Example group showing rotating daytime, evening and weekend shifts"
+                },
+                {
+                    "data_path": "action_result.data.*.members.data.*.member.observedByAll",
+                    "data_type": "boolean",
+                    "example_value": true
+                },
+                {
+                    "data_path": "action_result.data.*.members.data.*.member.allowDuplicates",
+                    "data_type": "boolean",
+                    "example_value": true
+                },
+                {
+                    "data_path": "action_result.data.*.members.data.*.member.useDefaultDevices",
+                    "data_type": "boolean",
+                    "example_value": true
+                },
+                {
+                    "data_path": "action_result.data.*.members.data.*.member.name",
+                    "data_type": "string",
+                    "example_value": "Work Email"
+                },
+                {
+                    "data_path": "action_result.data.*.members.data.*.member.delay",
+                    "data_type": "numeric",
+                    "example_value": 0
+                },
+                {
+                    "data_path": "action_result.data.*.members.data.*.member.owner.id",
+                    "data_type": "string",
+                    "example_value": "3c4edf02-ea0b-457c-bd83-766c4021ada6"
+                },
+                {
+                    "data_path": "action_result.data.*.members.data.*.member.owner.links.self",
+                    "data_type": "string",
+                    "example_value": "/api/xm/1/people/3c4edf02-ea0b-457c-bd83-766c4021ada6"
+                },
+                {
+                    "data_path": "action_result.data.*.members.data.*.member.owner.lastName",
+                    "data_type": "string",
+                    "example_value": "Stripe"
+                },
+                {
+                    "data_path": "action_result.data.*.members.data.*.member.owner.firstName",
+                    "data_type": "string",
+                    "example_value": "xMeryl"
+                },
+                {
+                    "data_path": "action_result.data.*.members.data.*.member.owner.targetName",
+                    "data_type": "string",
+                    "example_value": "mstripe"
+                },
+                {
+                    "data_path": "action_result.data.*.members.data.*.member.owner.licenseType",
+                    "data_type": "string",
+                    "example_value": "FULL_USER"
+                },
+                {
+                    "data_path": "action_result.data.*.members.data.*.member.owner.recipientType",
+                    "data_type": "string",
+                    "example_value": "PERSON"
+                },
+                {
+                    "data_path": "action_result.data.*.members.data.*.member.provider.id",
+                    "data_type": "string",
+                    "example_value": "(x)Matters Email Gateway"
+                },
+                {
+                    "data_path": "action_result.data.*.members.data.*.member.sequence",
+                    "data_type": "numeric",
+                    "example_value": 1
+                },
+                {
+                    "data_path": "action_result.data.*.members.data.*.member.deviceType",
+                    "data_type": "string",
+                    "example_value": "EMAIL"
+                },
+                {
+                    "data_path": "action_result.data.*.members.data.*.member.privileged",
+                    "data_type": "boolean",
+                    "example_value": false
+                },
+                {
+                    "data_path": "action_result.data.*.members.data.*.member.testStatus",
+                    "data_type": "string",
+                    "example_value": "UNTESTED"
+                },
+                {
+                    "data_path": "action_result.data.*.members.data.*.member.emailAddress",
+                    "data_type": "string",
+                    "example_value": "phantomlab@splunk.com"
+                },
+                {
+                    "data_path": "action_result.data.*.members.data.*.member.defaultDevice",
+                    "data_type": "boolean",
+                    "example_value": true
+                },
+                {
+                    "data_path": "action_result.data.*.members.data.*.member.priorityThreshold",
+                    "data_type": "string",
+                    "example_value": "LOW"
                 }
             ],
             "render": {
-                "width": 12,
-                "title": "Get Who is Oncall",
-                "type": "table",
-                "height": 5
+                "type": "custom",
+                "view": "xmatters_view.display_view"
             },
             "versions": "EQ(*)"
         }
