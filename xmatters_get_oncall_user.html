@@ -99,9 +99,10 @@ and limitations under the License.
         <h4 class="wf-h4-style">No data found</h4>
 
     {% else %}
-        <h4 class="wf-h3-style">Info</h4>
+        <h4 class="wf-h3-style">On-call Info</h4>
         <table class="wf-table-vertical">
             <thead>
+                <th class="widget-th">Group Name</th>
                 <th class="widget-th">Shift Name</th>
                 <th class="widget-th">Shift Starts (GMT)</th>
                 <th class="widget-th">Shift Ends (GMT)</th>
@@ -110,6 +111,9 @@ and limitations under the License.
             <tbody>
                 {% for data in result.data %}
                 <tr>
+                    <td class="widget-td" >
+                        {{ data.group.targetName  }}
+                    </td>
                     <td class="widget-td" >
                         {{ data.shift.name  }}
                     </td>
@@ -151,7 +155,7 @@ and limitations under the License.
                             {% endfor %}
                             </table>
                         {% else %}
-                            <h4 class="wf-h4-style">No memeber oncall</h4>
+                            <h4 class="wf-h4-style">This shift has no members</h4>
                         {% endif %}
                         </div>
                     </td>
