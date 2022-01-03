@@ -595,6 +595,7 @@ class XMattersConnector(BaseConnector):
     def _get_oncall_user(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
         params = {}
+        shift_count = 0
 
         embed = []
         if param.get('embed_shift'):
@@ -612,7 +613,10 @@ class XMattersConnector(BaseConnector):
         if param.get('to'):
             timeframe.append("shift")
         if len(timeframe) == 1:
-            return action_result.set_status(phantom.APP_ERROR, XM_WHO_IS_ONCALL_FAILURE)
+            return action_result.set_status(phantom.APP_ERROR, XM_WHO_IS_ONCALL_TIME_FAILURE)
+
+        if ((param.get('members_per_shift') > 100) or (param.get('members_per_shift') <= 0)):
+            return action_result.set_status(phantom.APP_ERROR, XM_WHO_IS_ONCALL_INVALID_MEM_FAILURE)
 
         ret_val, auth, headers = self._get_authorization_credentials(action_result)
         if phantom.is_fail(ret_val):
@@ -644,16 +648,24 @@ class XMattersConnector(BaseConnector):
 
         for res in response_json['data']:
             action_result.add_data(res)
+        i = 0
+        while i <= (len(response_json['data']) - 1):
+            for k, j in (response_json['data'][i]).items():
+                if k == 'shift':
+                    shift_count += 1
+            i += 1
 
         summary = action_result.update_summary({})
         try:
-            summary['members_on_call'] = response_json['data'][0]['members']['count']
+            response_json['data'][0]['members']['count']
         except KeyError:
-            summary['members_on_call'] = 'No shifts found for the given input parameters'
+            return action_result.set_status(phantom.APP_ERROR, XM_WHO_IS_ONCALL_FAILURE)
+
         try:
             summary['next_page'] = response_json['data'][0]['members']['links']['next']
         except KeyError:
             pass
+        summary['num_of_shifts'] = shift_count
         return action_result.set_status(phantom.APP_SUCCESS, XM_WHO_IS_ONCALL_SUCCESS)
 
     def handle_action(self, param):
