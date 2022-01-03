@@ -1,5 +1,5 @@
 # File: xmatters_connector.py
-# Copyright (c) 2017-2021 Splunk Inc.
+# Copyright (c) 2017-2022 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -615,7 +615,7 @@ class XMattersConnector(BaseConnector):
         if len(timeframe) == 1:
             return action_result.set_status(phantom.APP_ERROR, XM_WHO_IS_ONCALL_TIME_FAILURE)
 
-        if ((param.get('members_per_shift') > 100) or (param.get('members_per_shift') <= 0)):
+        if (param.get('members_per_shift') is not None) and ((param.get('members_per_shift') > 100) or (param.get('members_per_shift') <= 0)):
             return action_result.set_status(phantom.APP_ERROR, XM_WHO_IS_ONCALL_INVALID_MEM_FAILURE)
 
         ret_val, auth, headers = self._get_authorization_credentials(action_result)

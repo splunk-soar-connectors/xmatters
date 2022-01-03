@@ -15,10 +15,10 @@
     "fips_compliant": true,
     "logo": "logo_xmatters.svg",
     "logo_dark": "logo_xmatters_dark.svg",
-    "license": "Copyright (c) 2017-2021 Splunk Inc.",
+    "license": "Copyright (c) 2017-2022 Splunk Inc.",
     "python_version": "3",
     "latest_tested_versions": [
-        "api v1 tested on 31 December, 2021"
+        "api v1 tested on 3 January, 2022"
     ],
     "configuration": {
         "base_url": {
