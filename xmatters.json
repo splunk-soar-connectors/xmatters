@@ -5,7 +5,7 @@
     "type": "devops",
     "publisher": "Splunk",
     "main_module": "xmatters_connector.py",
-    "app_version": "2.1.0",
+    "app_version": "2.1.1",
     "utctime_updated": "2021-07-23T07:02:13.000000Z",
     "package_name": "phantom_xmatters",
     "product_vendor": "xMatters",
