@@ -6,7 +6,7 @@
     "publisher": "Splunk",
     "main_module": "xmatters_connector.py",
     "app_version": "2.1.1",
-    "utctime_updated": "2021-07-23T07:02:13.000000Z",
+    "utctime_updated": "2021-12-30T02:32:46.000000Z",
     "package_name": "phantom_xmatters",
     "product_vendor": "xMatters",
     "product_name": "xMatters",
