@@ -99,8 +99,8 @@ and limitations under the License.
         <h4 class="wf-h4-style">No data found</h4>
 
     {% else %}
-        <h4 class="wf-h3-style">On-call Info</h4>
-        <table class="wf-table-vertical">
+        <h4 class="wf-h4-style">On-call Info</h4>
+        <table class="wf-table-horizontal datatable">
             <thead>
                 <th class="widget-th">Group Name</th>
                 <th class="widget-th">Shift Name</th>
@@ -126,7 +126,7 @@ and limitations under the License.
                     <td>
                         <div class="results">
                         {% if data.members.data %}
-                            <table class="wf-table-horizontal datatable">
+                            <table class="wf-table-horizontal">
                             <thead>
                             <tr>
                                 <th>Member ID</th>
