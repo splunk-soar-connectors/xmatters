@@ -1,5 +1,5 @@
 # File: xmatters_connector.py
-# Copyright (c) 2017-2021 Splunk Inc.
+# Copyright (c) 2017-2022 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -595,6 +595,7 @@ class XMattersConnector(BaseConnector):
     def _get_oncall_user(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
         params = {}
+        shift_count = 0
 
         embed = []
         if param.get('embed_shift'):
@@ -612,7 +613,10 @@ class XMattersConnector(BaseConnector):
         if param.get('to'):
             timeframe.append("shift")
         if len(timeframe) == 1:
-            return action_result.set_status(phantom.APP_ERROR, XM_WHO_IS_ONCALL_FAILURE)
+            return action_result.set_status(phantom.APP_ERROR, XM_WHO_IS_ONCALL_TIME_FAILURE)
+
+        if (param.get('members_per_shift') is not None) and ((param.get('members_per_shift') > 100) or (param.get('members_per_shift') <= 0)):
+            return action_result.set_status(phantom.APP_ERROR, XM_WHO_IS_ONCALL_INVALID_MEM_FAILURE)
 
         ret_val, auth, headers = self._get_authorization_credentials(action_result)
         if phantom.is_fail(ret_val):
@@ -645,12 +649,20 @@ class XMattersConnector(BaseConnector):
         for res in response_json['data']:
             action_result.add_data(res)
 
+            if res.get('shift'):
+                shift_count += 1
+
         summary = action_result.update_summary({})
-        summary['members_on_call'] = response_json['data'][0]['members']['count']
+        try:
+            response_json['data'][0]['members']['count']
+        except KeyError:
+            return action_result.set_status(phantom.APP_ERROR, XM_WHO_IS_ONCALL_FAILURE)
+
         try:
             summary['next_page'] = response_json['data'][0]['members']['links']['next']
         except KeyError:
             pass
+        summary['num_of_shifts'] = shift_count
         return action_result.set_status(phantom.APP_SUCCESS, XM_WHO_IS_ONCALL_SUCCESS)
 
     def handle_action(self, param):

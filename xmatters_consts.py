@@ -1,5 +1,5 @@
 # File: xmatters_consts.py
-# Copyright (c) 2017-2021 Splunk Inc.
+# Copyright (c) 2017-2022 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -40,7 +40,9 @@ XM_WHO_IS_ONCALL_SUCCESS = "Successfully retrieved who is on call"
 XM_UPDATE_EVENT_SUCCESS = "Successfully updated event"
 XM_LIST_PEOPLE_SUCCESS = "Users retrieved successfully"
 XM_GET_PERSON_SUCCESS = "Successfully retrieved user"
-XM_WHO_IS_ONCALL_FAILURE = "Provide both from and to value for timeframe"
+XM_WHO_IS_ONCALL_TIME_FAILURE = "Please provide both from and to value for timeframe"
+XM_WHO_IS_ONCALL_FAILURE = "No shift found for the given input parameters"
+XM_WHO_IS_ONCALL_INVALID_MEM_FAILURE = "Please provide a valid integer from 1 to 100 in members_per_shift"
 
 XM_ERR_TOKEN_REQUEST = "Error in token request"
 XM_ERR_PARSE_ACCESS_TOKEN = "Unable to parse access token"
