@@ -2734,7 +2734,8 @@
                         "xmatters group id",
                         "xmatters group name"
                     ],
-                    "order": 0
+                    "order": 0,
+                    "primary": true
                 },
                 "members_per_shift": {
                     "description": "The number of shift members to include (Default: 3, Max: 100)",
