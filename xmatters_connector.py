@@ -648,12 +648,9 @@ class XMattersConnector(BaseConnector):
 
         for res in response_json['data']:
             action_result.add_data(res)
-        i = 0
-        while i <= (len(response_json['data']) - 1):
-            for k, j in (response_json['data'][i]).items():
-                if k == 'shift':
-                    shift_count += 1
-            i += 1
+
+            if res.get('shift'):
+                shift_count += 1
 
         summary = action_result.update_summary({})
         try:
