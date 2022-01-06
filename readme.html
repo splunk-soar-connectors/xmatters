@@ -1,0 +1,45 @@
+<!-- File: readme.html
+  Copyright (c) 2017-2022 Splunk Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under
+the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+either express or implied. See the License for the specific language governing permissions
+and limitations under the License.
+-->
+
+<html>
+<head>
+</head>
+<body>
+<h2>Historical Data Access</h2>
+<p>You can access historical data using to and from. By setting the to and from parameters to dates in the past, you automatically query historical data to return results. However, you cannot have a timeframe that spans from the past to the future and there is a 24-hour synchronization window for on-call data before it is available. This is to ensure that if you request on-call data for the current day, the request doesn’t try to simultaneously draw data from both historical data and the runtime data. For historical data queries, the length of time you can set is limited by your pricing plan.
+    Please refer <a href="https://help.xmatters.com/xmapi/#accessing-data" target="_blank">Accessing Data </a> for more details.</p>
+<h2>Port Information</h2>
+<p>
+    The app uses HTTP/ HTTPS protocol for communicating with the xMatters server. Below are the default ports used by Splunk SOAR.
+    <table>
+        <tr class=plain>
+            <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Service Name</th>
+            <th>Transport Protocol</th>
+            <th>Port</th>
+        </tr>
+        <tr>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;http</td>
+            <td>tcp</td>
+            <td>80</td>
+        </tr>
+        <tr>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;https</td>
+            <td>tcp</td>
+            <td>443</td>
+        </tr>
+    </table>
+</p>
+</body>
+</html>
