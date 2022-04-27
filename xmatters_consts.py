@@ -50,3 +50,4 @@ XM_ERR_AUTHORIZE_OAUTH_TOKEN = "Unable to authorize with OAuth token"
 XM_ERR_INVALID_JSON_PARAMS = "Unable to parse parameter '{0}' to json: {1}"
 
 XM_ERR_TEST_CONNECTIVITY_FAILED = "Test Connectivity Failed"
+XMATTERS_DEFAULT_REQUEST_TIMEOUT = 30  # in seconds
