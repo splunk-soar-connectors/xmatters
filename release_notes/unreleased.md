@@ -1,1 +1,2 @@
 **Unreleased**
+* Renamed 'xMatters' app to 'xMatters for SOAR' [PAPP-24795]
