@@ -1,16 +1,16 @@
 [comment]: # "Auto-generated SOAR connector documentation"
-# xMatters
+# xMatters for SOAR
 
 Publisher: Splunk  
-Connector Version: 2\.1\.3  
+Connector Version: 2\.1\.4  
 Product Vendor: xMatters  
 Product Name: xMatters  
 Product Version Supported (regex): "\.\*"  
-Minimum Product Version: 5\.0\.0  
+Minimum Product Version: 5\.2\.0  
 
 This app integrates with xMatters to retrieve information about events and users
 
-[comment]: # " File: readme.md"
+[comment]: # " File: README.md"
 [comment]: # "  Copyright (c) 2017-2022 Splunk Inc."
 [comment]: # ""
 [comment]: # "Licensed under the Apache License, Version 2.0 (the 'License');"
