@@ -198,7 +198,8 @@ class XMattersConnector(BaseConnector):
             return RetVal(action_result.set_status(phantom.APP_ERROR, "Handled exception: {0}".format(str(e))), None)
 
         try:
-            response = request_func(url, data=data, params=params, headers=headers, auth=auth, **kwargs)
+            response = request_func(url, data=data, params=params, headers=headers, auth=auth,
+                                    timeout=XMATTERS_DEFAULT_REQUEST_TIMEOUT, **kwargs)
         except Exception as e:
             # Set the action_result status to error, the handler function will most probably return as is
             return RetVal(action_result.set_status(phantom.APP_ERROR, "Error connecting: {0}".format(str(e))), None)
