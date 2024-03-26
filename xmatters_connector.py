@@ -95,18 +95,18 @@ class XMattersConnector(BaseConnector):
         :return: error message
         """
         error_code = PHANTOM_ERR_CODE_UNAVAILABLE
-        err_msg = PHANTOM_ERR_MSG_UNAVAILABLE
+        err_message = PHANTOM_ERR_MSG_UNAVAILABLE
         try:
             if hasattr(e, 'args'):
                 if len(e.args) > 1:
                     error_code = e.args[0]
-                    err_msg = e.args[1]
+                    err_message = e.args[1]
                 elif len(e.args) == 1:
-                    err_msg = e.args[0]
+                    err_message = e.args[0]
         except:
             pass
 
-        return "Error Code: {0}. Error Message: {1}".format(error_code, err_msg)
+        return "Error Code: {0}. Error Message: {1}".format(error_code, err_message)
 
     def _process_empty_reponse(self, response, action_result):
 
@@ -408,9 +408,9 @@ class XMattersConnector(BaseConnector):
                 except Exception as e:
                     self.debug_print(k)
                     self.debug_print(v)
-                    err_msg = self._get_error_message_from_exception(e)
+                    err_message = self._get_error_message_from_exception(e)
                     return action_result.set_status(phantom.APP_ERROR,
-                        "Unable to parse parameter '{0}' to json: {1}".format(k, err_msg))
+                        "Unable to parse parameter '{0}' to json: {1}".format(k, err_message))
             else:
                 body[k] = v
 
