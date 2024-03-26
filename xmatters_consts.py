@@ -31,7 +31,7 @@ XM_ENDPOINT_GET_PEOPLE = '/api/xm/1/people/{0}'
 XM_ENDPOINT_LIST_GROUPS = '/api/xm/1//groups'
 XM_ENDPOINT_GET_ONCALL = '/api/xm/1//on-call'
 
-XM_SUCC_TEST_CONNECTIVITY = "Test Connectivity Passed"
+XM_SUCCESS_TEST_CONNECTIVITY = "Test Connectivity Passed"
 XM_LIST_EVENTS_SUCCESS = "Events retrieved successfully"
 XM_LIST_GROUPS_SUCCESS = "Groups retrieved successfully"
 XM_CREATE_EVENT_SUCCESS = "Event created successfully"
@@ -49,5 +49,5 @@ XM_ERR_PARSE_ACCESS_TOKEN = "Unable to parse access token"
 XM_ERR_AUTHORIZE_OAUTH_TOKEN = "Unable to authorize with OAuth token"
 XM_ERR_INVALID_JSON_PARAMS = "Unable to parse parameter '{0}' to json: {1}"
 
-XM_ERR_TEST_CONNECTIVITY_FAILED = "Test Connectivity Failed"
+XM_ERR_TEST_CONNECTIVITY_FAILURE = "Test Connectivity Failed"
 XMATTERS_DEFAULT_REQUEST_TIMEOUT = 30  # in seconds

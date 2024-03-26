@@ -95,18 +95,18 @@ class XMattersConnector(BaseConnector):
         :return: error message
         """
         error_code = PHANTOM_ERR_CODE_UNAVAILABLE
-        error_msg = PHANTOM_ERR_MSG_UNAVAILABLE
+        err_msg = PHANTOM_ERR_MSG_UNAVAILABLE
         try:
             if hasattr(e, 'args'):
                 if len(e.args) > 1:
                     error_code = e.args[0]
-                    error_msg = e.args[1]
+                    err_msg = e.args[1]
                 elif len(e.args) == 1:
-                    error_msg = e.args[0]
+                    err_msg = e.args[0]
         except:
             pass
 
-        return "Error Code: {0}. Error Message: {1}".format(error_code, error_msg)
+        return "Error Code: {0}. Error Message: {1}".format(error_code, err_msg)
 
     def _process_empty_reponse(self, response, action_result):
 
@@ -326,7 +326,7 @@ class XMattersConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
         ret_val, auth, headers = self._get_authorization_credentials(action_result)
         if phantom.is_fail(ret_val):
-            return self.set_status_save_progress(phantom.APP_ERROR, XM_ERR_TEST_CONNECTIVITY_FAILED)
+            return self.set_status_save_progress(phantom.APP_ERROR, XM_ERR_TEST_CONNECTIVITY_FAILURE)
 
         self.save_progress('Making Request')
         # While there is a 'ping' endpoint, it will always return 200; it doesn't check auth at all
@@ -338,9 +338,9 @@ class XMattersConnector(BaseConnector):
                 reason = response_json.get('reason')
                 if reason:
                     self.save_progress("Error: {0}".format(reason))
-            return self.set_status(phantom.APP_ERROR, XM_ERR_TEST_CONNECTIVITY_FAILED)
+            return self.set_status(phantom.APP_ERROR, XM_ERR_TEST_CONNECTIVITY_FAILURE)
         else:
-            return self.set_status_save_progress(phantom.APP_SUCCESS, XM_SUCC_TEST_CONNECTIVITY)
+            return self.set_status_save_progress(phantom.APP_SUCCESS, XM_SUCCESS_TEST_CONNECTIVITY)
 
     def _list_events(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -408,9 +408,9 @@ class XMattersConnector(BaseConnector):
                 except Exception as e:
                     self.debug_print(k)
                     self.debug_print(v)
-                    error_msg = self._get_error_message_from_exception(e)
+                    err_msg = self._get_error_message_from_exception(e)
                     return action_result.set_status(phantom.APP_ERROR,
-                        "Unable to parse parameter '{0}' to json: {1}".format(k, error_msg))
+                        "Unable to parse parameter '{0}' to json: {1}".format(k, err_msg))
             else:
                 body[k] = v
 
