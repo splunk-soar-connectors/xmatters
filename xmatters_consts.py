@@ -1,5 +1,5 @@
 # File: xmatters_consts.py
-# Copyright (c) 2017-2024 Splunk Inc.
+# Copyright (c) 2017-2025 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,15 +21,15 @@ XM_CONFIG_PASSWORD = "password"  # pragma: allowlist secret
 XM_CONFIG_BASE_URL = "base_url"
 XM_CONFIG_CLIENT_ID = "client_id"
 
-XM_ENDPOINT_TEST_CONNECTIVITY = '/api/xm/1/events?limit=1'
-XM_ENDPOINT_LIST_EVENTS = '/api/xm/1/events'
+XM_ENDPOINT_TEST_CONNECTIVITY = "/api/xm/1/events?limit=1"
+XM_ENDPOINT_LIST_EVENTS = "/api/xm/1/events"
 XM_ENDPOINT_TRIGGER_EVENT = "/reapi/2015-04-01/forms/{0}/triggers"
-XM_ENDPOINT_GET_EVENT = '/api/xm/1/events/{0}'
-XM_ENDPOINT_UPDATE_EVENT = '/api/xm/1/events'
-XM_ENDPOINT_LIST_PEOPLE = '/api/xm/1/people'
-XM_ENDPOINT_GET_PEOPLE = '/api/xm/1/people/{0}'
-XM_ENDPOINT_LIST_GROUPS = '/api/xm/1//groups'
-XM_ENDPOINT_GET_ONCALL = '/api/xm/1//on-call'
+XM_ENDPOINT_GET_EVENT = "/api/xm/1/events/{0}"
+XM_ENDPOINT_UPDATE_EVENT = "/api/xm/1/events"
+XM_ENDPOINT_LIST_PEOPLE = "/api/xm/1/people"
+XM_ENDPOINT_GET_PEOPLE = "/api/xm/1/people/{0}"
+XM_ENDPOINT_LIST_GROUPS = "/api/xm/1//groups"
+XM_ENDPOINT_GET_ONCALL = "/api/xm/1//on-call"
 
 XM_SUCCESS_TEST_CONNECTIVITY = "Test Connectivity Passed"
 XM_LIST_EVENTS_SUCCESS = "Events retrieved successfully"
