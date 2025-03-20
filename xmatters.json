@@ -1,5 +1,5 @@
 {
-    "appid": "60E80285-8850-417A-9617-2423D6B9CA76",
+    "appid": "60e80285-8850-417a-9617-2423d6b9ca76",
     "name": "xMatters for SOAR",
     "description": "This app integrates with xMatters to retrieve information about events and users",
     "type": "devops",
@@ -15,7 +15,7 @@
     "fips_compliant": true,
     "logo": "logo_xmatters.svg",
     "logo_dark": "logo_xmatters_dark.svg",
-    "license": "Copyright (c) 2017-2024 Splunk Inc.",
+    "license": "Copyright (c) 2017-2025 Splunk Inc.",
     "python_version": "3",
     "latest_tested_versions": [
         "api v1 tested on 3 January, 2022"
@@ -2315,6 +2315,10 @@
                     "example_values": [
                         "1"
                     ]
+                },
+                {
+                    "data_path": "action_result.parameter.ph",
+                    "data_type": "ph"
                 }
             ],
             "versions": "EQ(*)"
