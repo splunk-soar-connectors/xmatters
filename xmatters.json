@@ -1,5 +1,5 @@
 {
-    "appid": "60e80285-8850-417a-9617-2423d6b9ca76",
+    "appid": "60E80285-8850-417A-9617-2423D6B9CA76",
     "name": "xMatters for SOAR",
     "description": "This app integrates with xMatters to retrieve information about events and users",
     "type": "devops",
@@ -3361,15 +3361,9 @@
         ]
     },
     "pip39_dependencies": {
-        "wheel": [
-            {
-                "module": "beautifulsoup4",
-                "input_file": "wheels/py3/beautifulsoup4-4.9.1-py3-none-any.whl"
-            },
-            {
-                "module": "soupsieve",
-                "input_file": "wheels/py3/soupsieve-2.5-py3-none-any.whl"
-            }
-        ]
+        "wheel": []
+    },
+    "pip313_dependencies": {
+        "wheel": []
     }
 }
