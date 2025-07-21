@@ -90,6 +90,8 @@ def display_view(provides, all_app_runs, context):
                 continue
             results.append(ctx_result)
 
+    return_page = None
+
     if provides == "get oncall user":
         return_page = "xmatters_get_oncall_user.html"
 
