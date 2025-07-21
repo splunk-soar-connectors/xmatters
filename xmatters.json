@@ -16,7 +16,7 @@
     "logo": "logo_xmatters.svg",
     "logo_dark": "logo_xmatters_dark.svg",
     "license": "Copyright (c) 2017-2025 Splunk Inc.",
-    "python_version": "3",
+    "python_version": ["3.9", "3.13"],
     "latest_tested_versions": [
         "api v1 tested on 3 January, 2022"
     ],
