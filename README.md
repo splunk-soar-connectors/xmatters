@@ -1,9 +1,9 @@
 # xMatters for SOAR
 
-Publisher: Splunk \
-Connector Version: 2.1.6 \
-Product Vendor: xMatters \
-Product Name: xMatters \
+Publisher: Splunk <br>
+Connector Version: 2.1.6 <br>
+Product Vendor: xMatters <br>
+Product Name: xMatters <br>
 Minimum Product Version: 5.2.0
 
 This app integrates with xMatters to retrieve information about events and users
@@ -42,21 +42,21 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 
 ### Supported Actions
 
-[test connectivity](#action-test-connectivity) - Run a quick query on the server to check the connection and credentials \
-[get event](#action-get-event) - Get information about a single event \
-[update event](#action-update-event) - Update the status of an event \
-[get user](#action-get-user) - Get information about a user \
-[create event](#action-create-event) - Create (trigger) an event in xMatters \
-[list users](#action-list-users) - Get information about multiple users matching a property name/value \
-[list events](#action-list-events) - Query for specific events by providing a property name/value \
-[list groups](#action-list-groups) - Get information about multiple groups matching a property \
+[test connectivity](#action-test-connectivity) - Run a quick query on the server to check the connection and credentials <br>
+[get event](#action-get-event) - Get information about a single event <br>
+[update event](#action-update-event) - Update the status of an event <br>
+[get user](#action-get-user) - Get information about a user <br>
+[create event](#action-create-event) - Create (trigger) an event in xMatters <br>
+[list users](#action-list-users) - Get information about multiple users matching a property name/value <br>
+[list events](#action-list-events) - Query for specific events by providing a property name/value <br>
+[list groups](#action-list-groups) - Get information about multiple groups matching a property <br>
 [get oncall user](#action-get-oncall-user) - Get information about who is on call
 
 ## action: 'test connectivity'
 
 Run a quick query on the server to check the connection and credentials
 
-Type: **test** \
+Type: **test** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -71,7 +71,7 @@ No Output
 
 Get information about a single event
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -164,7 +164,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Update the status of an event
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 #### Action Parameters
@@ -239,7 +239,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Get information about a user
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -288,7 +288,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Create (trigger) an event in xMatters
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 See <a href="https://help.xmatters.com/OnDemand/xmodwelcome/communicationplanbuilder/appendixrestapi.htm?cshid=apiPOSTtrigger#POSTtrigger">this link</a> for more information on the parameters. The input expects the actual string literal representations of their respective fields. Lists need to be enclosed in square braces, objects in curly braces, etc.
@@ -327,7 +327,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Get information about multiple users matching a property name/value
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -389,7 +389,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Query for specific events by providing a property name/value
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -462,7 +462,7 @@ action_result.parameter.ph | ph | | |
 
 Get information about multiple groups matching a property
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -532,7 +532,7 @@ action_result.data.\*.observers.total | numeric | | 1 |
 
 Get information about who is on call
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
