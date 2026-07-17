@@ -18,6 +18,8 @@ import urllib.parse
 import urllib.request
 from datetime import datetime
 
+import encryption_helper
+
 # Phantom Imports
 import phantom.app as phantom
 
@@ -82,9 +84,20 @@ class XMattersConnector(BaseConnector):
             self._use_token = True
 
         self._state = self.load_state()
+        token = self._state.get("oauth_token")
+        if isinstance(token, str):
+            try:
+                self._state["oauth_token"] = json.loads(encryption_helper.decrypt(token, self.get_asset_id()))
+            except Exception:
+                self.debug_print("Unable to decrypt cached OAuth token; requesting a new token")
+                self._state.pop("oauth_token", None)
+                self._state.pop("retrieval_time", None)
         return phantom.APP_SUCCESS
 
     def finalize(self):
+        token = self._state.get("oauth_token")
+        if isinstance(token, dict):
+            self._state["oauth_token"] = encryption_helper.encrypt(json.dumps(token), self.get_asset_id())
         self.save_state(self._state)
         return phantom.APP_SUCCESS
 
