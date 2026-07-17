@@ -1,3 +1,3 @@
 **Unreleased**
 
-* Update development tooling.
+* Safely constrain xMatters API path and pagination inputs.

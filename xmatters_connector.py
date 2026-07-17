@@ -88,6 +88,18 @@ class XMattersConnector(BaseConnector):
         self.save_state(self._state)
         return phantom.APP_SUCCESS
 
+    def _get_page_endpoint(self, action_result, page_uri, expected_path):
+        page = urllib.parse.urlsplit(page_uri)
+        base = urllib.parse.urlsplit(self._base_url)
+        if page.scheme or page.netloc:
+            if (page.scheme, page.netloc) != (base.scheme, base.netloc):
+                action_result.set_status(phantom.APP_ERROR, "Pagination link must use the configured xMatters API origin")
+                return None
+        if not page.path.startswith(expected_path) or any(part in (".", "..") for part in page.path.split("/")):
+            action_result.set_status(phantom.APP_ERROR, "Invalid xMatters pagination link")
+            return None
+        return urllib.parse.urlunsplit(("", "", page.path, page.query, ""))
+
     def _get_error_message_from_exception(self, e):
         """This method is used to get appropriate error message from the exception.
         :param e: Exception object
@@ -344,7 +356,9 @@ class XMattersConnector(BaseConnector):
 
         # Prefer the next page if provided
         try:
-            endpoint = param["page_uri"]
+            endpoint = self._get_page_endpoint(action_result, param["page_uri"], XM_ENDPOINT_LIST_EVENTS)
+            if endpoint is None:
+                return action_result.get_status()
         except KeyError:
             for k, v in param.items():
                 if k == "context":
@@ -389,7 +403,7 @@ class XMattersConnector(BaseConnector):
             if k == "context":
                 continue
             elif k == "form_uuid":
-                endpoint = endpoint.format(v)
+                endpoint = endpoint.format(urllib.parse.quote(str(v), safe=""))
             elif k == "recipients":
                 tnames = v.split(",")
                 recipients = [{"targetName": x.strip()} for x in tnames]
@@ -421,7 +435,7 @@ class XMattersConnector(BaseConnector):
         params = {}
 
         event_id = param["event_id"]
-        endpoint = XM_ENDPOINT_GET_EVENT.format(event_id)
+        endpoint = XM_ENDPOINT_GET_EVENT.format(urllib.parse.quote(str(event_id), safe=""))
 
         ret_val, auth, headers = self._get_authorization_credentials(action_result)
         if phantom.is_fail(ret_val):
@@ -482,7 +496,9 @@ class XMattersConnector(BaseConnector):
             return ret_val
 
         try:
-            endpoint = param["page_uri"]
+            endpoint = self._get_page_endpoint(action_result, param["page_uri"], XM_ENDPOINT_LIST_PEOPLE)
+            if endpoint is None:
+                return action_result.get_status()
         except KeyError:
             regex = re.compile(r",\s+")
             for k, v in param.items():
@@ -515,7 +531,7 @@ class XMattersConnector(BaseConnector):
         params = {}
 
         person_id = param["identifier"]
-        endpoint = XM_ENDPOINT_GET_PEOPLE.format(person_id)
+        endpoint = XM_ENDPOINT_GET_PEOPLE.format(urllib.parse.quote(str(person_id), safe=""))
 
         ret_val, auth, headers = self._get_authorization_credentials(action_result)
         if phantom.is_fail(ret_val):
