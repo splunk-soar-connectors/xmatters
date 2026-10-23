@@ -37,7 +37,7 @@ app = App(
     product_vendor="xMatters",
     product_name="xMatters",
     publisher="Splunk",
-    appid="60e80285-8850-417a-9617-2423d6b9ca76",
+    appid="60E80285-8850-417A-9617-2423D6B9CA76",
     fips_compliant=True,
     asset_cls=Asset,
 )
