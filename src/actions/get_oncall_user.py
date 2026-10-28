@@ -202,6 +202,7 @@ class GetOncallUserSummary(ActionOutput):
 
 
 @app.action(
+    name="get oncall user",
     description="Get information about who is on call",
     action_type="investigate",
     read_only=True,
@@ -212,12 +213,12 @@ def get_oncall_user(
     params: GetOncallUserParams, asset: Asset, soar: SOARClient
 ) -> list[GetOncallUserOutput]:
     if bool(params.from_) != bool(params.to):
-        raise ValueError("Please provide both from and to value for timeframe")
+        raise ActionFailure("Please provide both from and to value for timeframe")
     if (
         params.members_per_shift is not None
         and not 1 <= params.members_per_shift <= 100
     ):
-        raise ValueError(
+        raise ActionFailure(
             "Please provide a valid value from 1 to 100 for members_per_shift"
         )
 
@@ -237,7 +238,7 @@ def get_oncall_user(
     if params.to is not None:
         query["to"] = params.to
 
-    payload = xmatters_request(asset, "GET", "/api/xm/1//on-call", params=query)
+    payload = xmatters_request(asset, "GET", "/api/xm/1/on-call", params=query)
     rows = payload["data"]
     if not rows or "members" not in rows[0] or "count" not in rows[0]["members"]:
         raise ActionFailure("No shift found for the given input parameters")

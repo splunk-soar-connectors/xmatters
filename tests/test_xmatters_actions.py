@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import pytest
+from soar_sdk.exceptions import ActionFailure
 
 from src import app as app_module
 from src.actions import (
@@ -95,14 +96,14 @@ def test_initiate_event_builds_legacy_trigger_body(asset, monkeypatch):
         form_uuid="form/1",
         recipients=" alice, bob ",
         properties='{"ticket": "INC-1"}',
-        responses="response-1,response-2",
+        responses='["response-1", "response-2"]',
     )
     initiate_event.initiate_event.__wrapped__(params, asset, FakeSoar())
     assert calls[0][0][2] == "/reapi/2015-04-01/forms/form%2F1/triggers"
     assert calls[0][1]["json_body"] == {
         "recipients": [{"targetName": "alice"}, {"targetName": "bob"}],
         "properties": {"ticket": "INC-1"},
-        "responses": "response-1,response-2",
+        "responses": ["response-1", "response-2"],
     }
 
 
@@ -115,12 +116,15 @@ def test_list_people_builds_search_and_page_queries(asset, monkeypatch):
             calls.append((args, kwargs)) or {"count": 0, "data": []}
         ),
     )
-    params = list_people.ListUsersParams(search="Alice, Bob", embed_roles=True, limit=5)
+    params = list_people.ListUsersParams(
+        search="Alice, Bob", embed_roles=True, offset=2, limit=5
+    )
     list_people.list_people.__wrapped__(params, asset, FakeSoar())
     assert calls[0][1]["params"] == {
         "search": "Alice,Bob",
         "embed": "roles",
-        "limit": 5.0,
+        "offset": 2,
+        "limit": 5,
     }
 
     unsafe = list_people.ListUsersParams(
@@ -140,8 +144,10 @@ def test_list_events_maps_property_filters_and_time_range(asset, monkeypatch):
         ),
     )
     params = list_events.ListEventsParams(
-        property_name="priority,service",
-        property_value="HIGH,Email",
+        property_name="priority,,service",
+        property_value="HIGH,,,, Email",
+        offset=2,
+        limit=10,
         **{
             "from": "2026-01-01T00:00:00Z",
             "to": "2026-01-02T00:00:00Z",
@@ -151,6 +157,8 @@ def test_list_events_maps_property_filters_and_time_range(asset, monkeypatch):
     assert calls[0][1]["params"] == {
         "propertyName": "priority,service",
         "propertyValue": "HIGH,Email",
+        "offset": 2,
+        "limit": 10,
         "from": "2026-01-01T00:00:00Z",
         "to": "2026-01-02T00:00:00Z",
     }
@@ -170,7 +178,7 @@ def test_list_groups_maps_embed_filters_and_rows(asset, monkeypatch):
         asset,
         FakeSoar(),
     )
-    assert calls[0][0][2] == "/api/xm/1//groups"
+    assert calls[0][0][2] == "/api/xm/1/groups"
     assert calls[0][1]["params"] == {"embed": "observers", "search": "Security"}
     assert [item.id for item in output] == ["group-1"]
 
@@ -192,7 +200,7 @@ def test_get_oncall_validates_timeframe_and_returns_rows(asset, monkeypatch):
         asset,
         FakeSoar(),
     )
-    assert calls[0][0][2] == "/api/xm/1//on-call"
+    assert calls[0][0][2] == "/api/xm/1/on-call"
     assert calls[0][1]["params"] == {
         "embed": "members.owner",
         "groups": "platform,security",
@@ -203,5 +211,5 @@ def test_get_oncall_validates_timeframe_and_returns_rows(asset, monkeypatch):
     invalid = get_oncall_user.GetOncallUserParams(
         groups="platform", **{"from": "start"}
     )
-    with pytest.raises(ValueError, match="both from and to"):
+    with pytest.raises(ActionFailure, match="both from and to"):
         get_oncall_user.get_oncall_user.__wrapped__(invalid, asset, FakeSoar())

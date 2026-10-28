@@ -172,6 +172,7 @@ class GetEventSummary(ActionOutput):
 
 
 @app.action(
+    name="get event",
     description="Get information about a single event",
     action_type="investigate",
     read_only=True,

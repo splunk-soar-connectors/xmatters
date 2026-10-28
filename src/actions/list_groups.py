@@ -122,6 +122,7 @@ class ListGroupsSummary(ActionOutput):
 
 
 @app.action(
+    name="list groups",
     description="Get information about multiple groups matching a property",
     action_type="investigate",
     read_only=True,
@@ -145,7 +146,7 @@ def list_groups(
     if params.status is not None:
         query["status"] = params.status
 
-    payload = xmatters_request(asset, "GET", "/api/xm/1//groups", params=query)
+    payload = xmatters_request(asset, "GET", "/api/xm/1/groups", params=query)
     count = payload.get("count")
     soar.set_summary(ListGroupsSummary(groups_returned=count))
     soar.set_message(f"Num of groups found: {count}")

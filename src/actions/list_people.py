@@ -32,10 +32,10 @@ class ListUsersParams(Params):
     property_value: str | None = Param(
         description="Comma-separated list of property values"
     )
-    offset: float | None = Param(
+    offset: int | None = Param(
         description="Number of items to skip before returning results"
     )
-    limit: float | None = Param(description="The number of items to return")
+    limit: int | None = Param(description="The number of items to return")
     page_uri: str | None = Param(description="URI For the page")
 
 
@@ -86,6 +86,7 @@ class ListPeopleSummary(ActionOutput):
 
 
 @app.action(
+    name="list users",
     description="Get information about multiple users matching a property name/value",
     action_type="investigate",
     read_only=True,

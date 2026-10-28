@@ -136,6 +136,7 @@ class UpdateEventSummary(ActionOutput):
 
 
 @app.action(
+    name="update event",
     description="Update the status of an event",
     action_type="generic",
     read_only=False,

@@ -15,6 +15,7 @@ import json
 import urllib.parse
 from soar_sdk.abstract import SOARClient
 from soar_sdk.action_results import ActionOutput, OutputField
+from soar_sdk.exceptions import ActionFailure
 from soar_sdk.params import Param, Params
 from ..app import Asset, app
 from .common import build_output, xmatters_request
@@ -37,7 +38,7 @@ class CreateEventParams(Params):
     )
     conferences: str | None = Param(description="The list of conferences bridges")
     responses: str | None = Param(
-        description="The comma-separated list of response option UUIDs"
+        description="A JSON list of response option UUIDs"
     )
 
 
@@ -54,6 +55,7 @@ class CreateEventSummary(ActionOutput):
 
 
 @app.action(
+    name="create event",
     description="Create (trigger) an event in xMatters",
     action_type="generic",
     read_only=False,
@@ -75,19 +77,21 @@ def initiate_event(
             {"targetName": target.strip()} for target in params.recipients.split(",")
         ]
     }
-    for name in ("properties", "callbacks", "conferences"):
+    for name in ("properties", "callbacks", "conferences", "responses"):
         value = getattr(params, name)
         if value is not None:
             try:
                 body[name] = json.loads(value)
             except (TypeError, json.JSONDecodeError) as exc:
-                raise ValueError(f"Unable to parse parameter '{name}' as JSON") from exc
-    for name in ("priority", "responses"):
-        value = getattr(params, name)
-        if value is not None:
-            body[name] = value
+                raise ActionFailure(
+                    f"Unable to parse parameter '{name}' as JSON"
+                ) from exc
+    if params.priority is not None:
+        body["priority"] = params.priority
 
-    payload = xmatters_request(asset, "POST", endpoint, json_body=body)
+    payload = xmatters_request(
+        asset, "POST", endpoint, json_body=body, oauth=False
+    )
     soar.set_summary(CreateEventSummary(event_id=payload.get("id")))
     soar.set_message("Event created successfully")
     return build_output(CreateEventOutput, payload)

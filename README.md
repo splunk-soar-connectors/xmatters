@@ -311,7 +311,7 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 **callbacks** | optional | The list of Event Update Callback Objects | string | |
 **priority** | optional | The priority of the event | string | |
 **conferences** | optional | The list of conferences bridges | string | |
-**responses** | optional | The comma-separated list of response option UUIDs | string | |
+**responses** | optional | A JSON list of response option UUIDs | string | |
 
 #### Action Output
 

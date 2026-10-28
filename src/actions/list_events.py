@@ -18,6 +18,12 @@ from ..app import Asset, app
 from .common import build_output, page_endpoint, xmatters_request
 
 
+def _normalize_csv_filter(value: str) -> str | None:
+    items = [item.strip() for item in value.split(",")]
+    normalized = [item for item in items if item]
+    return ",".join(normalized) if normalized else None
+
+
 class ListEventsParams(Params):
     property_name: str | None = Param(
         description="Comma-separated list of property names"
@@ -25,10 +31,10 @@ class ListEventsParams(Params):
     property_value: str | None = Param(
         description="Comma-separated list of property values"
     )
-    offset: float | None = Param(
+    offset: int | None = Param(
         description="Number of items to skip before returning results"
     )
-    limit: float | None = Param(description="The number of items to return")
+    limit: int | None = Param(description="The number of items to return")
     status: str | None = Param(
         description="Status of the event",
         value_list=["", "ACTIVE", "SUSPENDED", "TERMINATED"],
@@ -131,6 +137,7 @@ class ListEventsSummary(ActionOutput):
 
 
 @app.action(
+    name="list events",
     description="Query for specific events by providing a property name/value",
     action_type="investigate",
     read_only=True,
@@ -146,10 +153,20 @@ def list_events(
         query = None
     else:
         query = {}
-        if params.property_name is not None:
-            query["propertyName"] = params.property_name
-        if params.property_value is not None:
-            query["propertyValue"] = params.property_value
+        property_name = (
+            _normalize_csv_filter(params.property_name)
+            if params.property_name is not None
+            else None
+        )
+        property_value = (
+            _normalize_csv_filter(params.property_value)
+            if params.property_value is not None
+            else None
+        )
+        if property_name:
+            query["propertyName"] = property_name
+        if property_value:
+            query["propertyValue"] = property_value
         if params.offset is not None:
             query["offset"] = params.offset
         if params.limit is not None:

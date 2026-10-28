@@ -92,6 +92,7 @@ class GetPersonSummary(ActionOutput):
 
 
 @app.action(
+    name="get user",
     description="Get information about a user",
     action_type="investigate",
     read_only=True,
