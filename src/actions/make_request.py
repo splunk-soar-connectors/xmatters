@@ -18,6 +18,7 @@ import urllib.parse
 
 import httpx
 from soar_sdk.action_results import MakeRequestOutput
+from soar_sdk.exceptions import ActionFailure
 from soar_sdk.params import MakeRequestParams
 
 from ..app import Asset, app
@@ -63,25 +64,38 @@ def _make_request_headers(value):
     return headers
 
 
-def _make_request_query(endpoint, query_parameters):
-    parsed = urllib.parse.urlsplit(endpoint)
-    endpoint_query = urllib.parse.parse_qsl(parsed.query, keep_blank_values=True)
+def _parse_query_parameters(query_parameters):
     if not query_parameters:
-        return endpoint_query
+        return []
     if query_parameters.lstrip().startswith("{"):
         try:
             extra = json.loads(query_parameters)
         except json.JSONDecodeError as error:
-            raise ValueError(
+            raise ActionFailure(
                 "query_parameters must be a JSON object or query string"
             ) from error
         if not isinstance(extra, dict):
-            raise ValueError("query_parameters must be a JSON object")
-        return [*endpoint_query, *extra.items()]
-    return [
-        *endpoint_query,
-        *urllib.parse.parse_qsl(query_parameters.lstrip("?"), keep_blank_values=True),
-    ]
+            raise ActionFailure("query_parameters must be a JSON object")
+        return list(extra.items())
+    return urllib.parse.parse_qsl(
+        query_parameters.lstrip("?"), keep_blank_values=True
+    )
+
+
+def _make_request_query(endpoint, query_parameters):
+    parsed = urllib.parse.urlsplit(endpoint)
+    endpoint_query = urllib.parse.parse_qsl(parsed.query, keep_blank_values=True)
+    extra_query = _parse_query_parameters(query_parameters)
+    endpoint_keys = {key for key, _ in endpoint_query}
+    parameter_keys = {key for key, _ in extra_query}
+    duplicates = sorted(endpoint_keys & parameter_keys)
+    if duplicates:
+        duplicate_names = ", ".join(duplicates)
+        raise ActionFailure(
+            f"query parameter(s) {duplicate_names} are specified in both "
+            "endpoint and query_parameters"
+        )
+    return [*endpoint_query, *extra_query]
 
 
 @app.make_request()
@@ -90,6 +104,10 @@ def make_request(params: MakeRequestParams, asset: Asset) -> MakeRequestOutput:
     endpoint = _make_request_endpoint(params.endpoint)
     headers = _make_request_headers(params.headers)
     query = _make_request_query(endpoint, params.query_parameters)
+    parsed_endpoint = urllib.parse.urlsplit(endpoint)
+    endpoint_path = urllib.parse.urlunsplit(
+        ("", "", parsed_endpoint.path, "", "")
+    )
     timeout = params.timeout or 30.0
 
     request_headers = {"Content-Type": "application/json", **headers}
@@ -102,7 +120,7 @@ def make_request(params: MakeRequestParams, asset: Asset) -> MakeRequestOutput:
             client,
             asset,
             params.http_method,
-            endpoint,
+            endpoint_path,
             headers=request_headers,
             params=query,
             content=params.body,

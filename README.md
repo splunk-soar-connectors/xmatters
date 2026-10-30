@@ -57,6 +57,10 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 
 Verify xMatters credentials by requesting a limited events page.
 
+The SDK-generated success message is `Test connectivity successful`. This replaces the legacy
+message `Connectivity test succeeded`; update any playbooks or scripts that compare the exact
+message text.
+
 Type: **test** <br>
 Read only: **True**
 

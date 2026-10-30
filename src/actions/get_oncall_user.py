@@ -227,9 +227,12 @@ def get_oncall_user(
         embeds.append("shift")
     if params.embed_owner:
         embeds.append("members.owner")
+    group_names = [
+        group.strip() for group in params.groups.split(",") if group.strip()
+    ]
     query = {
         "embed": ",".join(embeds),
-        "groups": ",".join(x.strip() for x in params.groups.split(",")),
+        "groups": ",".join(group_names),
     }
     if params.members_per_shift is not None:
         query["membersPerShift"] = int(params.members_per_shift)

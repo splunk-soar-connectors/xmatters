@@ -22,6 +22,7 @@ from src.actions import (
     list_events,
     list_groups,
     list_people,
+    make_request,
     test_connectivity,
     update_event,
 )
@@ -213,3 +214,28 @@ def test_get_oncall_validates_timeframe_and_returns_rows(asset, monkeypatch):
     )
     with pytest.raises(ActionFailure, match="both from and to"):
         get_oncall_user.get_oncall_user.__wrapped__(invalid, asset, FakeSoar())
+    assert len(calls) == 1
+
+    invalid_member_count = get_oncall_user.GetOncallUserParams(
+        groups="platform", members_per_shift=0
+    )
+    with pytest.raises(ActionFailure, match="valid value from 1 to 100"):
+        get_oncall_user.get_oncall_user.__wrapped__(
+            invalid_member_count, asset, FakeSoar()
+        )
+    assert len(calls) == 1
+
+
+def test_make_request_rejects_absolute_url_before_httpx_client(asset, monkeypatch):
+    def unexpected_client(*_args, **_kwargs):
+        pytest.fail("absolute endpoints must be rejected before creating a client")
+
+    monkeypatch.setattr(make_request.httpx, "Client", unexpected_client)
+    params = make_request.MakeRequestParams(
+        http_method="GET", endpoint="https://example.invalid/api/xm/1/events"
+    )
+
+    with pytest.raises(
+        ValueError, match="endpoint must be a relative xMatters API path"
+    ):
+        make_request.make_request.__wrapped__(params, asset)

@@ -143,11 +143,7 @@ def authenticated_request(
             )
         return response
 
-    auth = (
-        None
-        if custom_authorization and asset.client_id and oauth
-        else BasicAuth(asset.username, asset.password)
-    )
+    auth = None if custom_authorization else BasicAuth(asset.username, asset.password)
     return client.request(
         method,
         endpoint,

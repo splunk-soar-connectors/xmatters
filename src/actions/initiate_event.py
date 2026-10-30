@@ -37,9 +37,7 @@ class CreateEventParams(Params):
         value_list=["", "LOW", "MEDIUM", "HIGH"],
     )
     conferences: str | None = Param(description="The list of conferences bridges")
-    responses: str | None = Param(
-        description="A JSON list of response option UUIDs"
-    )
+    responses: str | None = Param(description="A JSON list of response option UUIDs")
 
 
 class CreateEventOutput(ActionOutput):
@@ -89,9 +87,7 @@ def initiate_event(
     if params.priority is not None:
         body["priority"] = params.priority
 
-    payload = xmatters_request(
-        asset, "POST", endpoint, json_body=body, oauth=False
-    )
+    payload = xmatters_request(asset, "POST", endpoint, json_body=body, oauth=False)
     soar.set_summary(CreateEventSummary(event_id=payload.get("id")))
     soar.set_message("Event created successfully")
     return build_output(CreateEventOutput, payload)
