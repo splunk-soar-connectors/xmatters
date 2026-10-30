@@ -42,7 +42,7 @@ repos:
     hooks:
       - id: soar-app-linter
         # The linter crashes on the default root target because dirname(".") is empty.
-        args: ["--single-repo", "--message-level", "error", "./src/.."]
+        args: ["--single-repo", "--message-level", "error", "--no-deps", "./src/.."]
   - repo: https://github.com/hukkin/mdformat
     rev: 0.7.22
     hooks:
