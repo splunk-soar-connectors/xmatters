@@ -96,7 +96,9 @@ def test_get_event_basic_auth_and_no_embed(monkeypatch):
     FakeClient.instances.clear()
     monkeypatch.setattr("httpx.Client", FakeClient)
     asset = app_module.Asset(
-        base_url="https://tenant.xmatters.com/", username="user", password="pass"
+        base_url="https://tenant.xmatters.com/",
+        username="user",
+        password="pass",  # pragma: allowlist secret
     )
 
     result = get_event_module.get_event.__wrapped__(

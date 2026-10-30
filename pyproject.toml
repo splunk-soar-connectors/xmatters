@@ -1,5 +1,5 @@
 [project]
-name = "phantom-xmatters"
+name = "xmatters"
 version = "2.1.8"
 description = "This app integrates with xMatters to retrieve information about events and users"
 license = "Copyright (c) 2017-2026 Splunk Inc."

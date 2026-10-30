@@ -41,7 +41,8 @@ repos:
     rev: 0.1.0
     hooks:
       - id: soar-app-linter
-        args: ["--single-repo", "--message-level", "error"]
+        # The linter crashes on the default root target because dirname(".") is empty.
+        args: ["--single-repo", "--message-level", "error", "./src/.."]
   - repo: https://github.com/hukkin/mdformat
     rev: 0.7.22
     hooks:
@@ -51,6 +52,8 @@ repos:
     rev: v1.89.0
     hooks:
       - id: semgrep
+        # Semgrep 1.89 imports pkg_resources through OpenTelemetry; setuptools 82 removed it.
+        additional_dependencies: ["setuptools<82"]
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.5.0
     hooks:

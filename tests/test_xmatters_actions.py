@@ -31,7 +31,9 @@ from src.actions import (
 @pytest.fixture
 def asset():
     return app_module.Asset(
-        base_url="https://tenant.xmatters.com", username="user", password="pass"
+        base_url="https://tenant.xmatters.com",
+        username="user",
+        password="pass",  # pragma: allowlist secret
     )
 
 
