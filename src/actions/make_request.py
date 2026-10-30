@@ -77,9 +77,7 @@ def _parse_query_parameters(query_parameters):
         if not isinstance(extra, dict):
             raise ActionFailure("query_parameters must be a JSON object")
         return list(extra.items())
-    return urllib.parse.parse_qsl(
-        query_parameters.lstrip("?"), keep_blank_values=True
-    )
+    return urllib.parse.parse_qsl(query_parameters.lstrip("?"), keep_blank_values=True)
 
 
 def _make_request_query(endpoint, query_parameters):
@@ -105,9 +103,7 @@ def make_request(params: MakeRequestParams, asset: Asset) -> MakeRequestOutput:
     headers = _make_request_headers(params.headers)
     query = _make_request_query(endpoint, params.query_parameters)
     parsed_endpoint = urllib.parse.urlsplit(endpoint)
-    endpoint_path = urllib.parse.urlunsplit(
-        ("", "", parsed_endpoint.path, "", "")
-    )
+    endpoint_path = urllib.parse.urlunsplit(("", "", parsed_endpoint.path, "", ""))
     timeout = params.timeout or 30.0
 
     request_headers = {"Content-Type": "application/json", **headers}

@@ -227,9 +227,7 @@ def get_oncall_user(
         embeds.append("shift")
     if params.embed_owner:
         embeds.append("members.owner")
-    group_names = [
-        group.strip() for group in params.groups.split(",") if group.strip()
-    ]
+    group_names = [group.strip() for group in params.groups.split(",") if group.strip()]
     query = {
         "embed": ",".join(embeds),
         "groups": ",".join(group_names),

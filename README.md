@@ -19,6 +19,12 @@ runtime data. For historical data queries, the length of time you can set is lim
 plan. Please refer [Accessing Data](https://help.xmatters.com/xmapi/#accessing-data) for more
 details.
 
+## Test Connectivity Message Compatibility
+
+The SDK-generated success message for Test Connectivity is `Test connectivity successful`. The
+legacy connector used `Connectivity test succeeded`. Update any playbooks or scripts that compare
+the exact message text when migrating to the SDK app.
+
 ## Port Information
 
 The app uses HTTP/ HTTPS protocol for communicating with the xMatters server. Below are the default
@@ -45,9 +51,9 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 [test connectivity](#action-test-connectivity) - Verify xMatters credentials by requesting a limited events page. <br>
 [get event](#action-get-event) - Get information about a single event <br>
 [update event](#action-update-event) - Update the status of an event <br>
-[get person](#action-get-person) - Get information about a user <br>
-[initiate event](#action-initiate-event) - Create (trigger) an event in xMatters <br>
-[list people](#action-list-people) - Get information about multiple users matching a property name/value <br>
+[get user](#action-get-user) - Get information about a user <br>
+[create event](#action-create-event) - Create (trigger) an event in xMatters <br>
+[list users](#action-list-users) - Get information about multiple users matching a property name/value <br>
 [list events](#action-list-events) - Query for specific events by providing a property name/value <br>
 [list groups](#action-list-groups) - Get information about multiple groups matching a property <br>
 [get oncall user](#action-get-oncall-user) - Get information about who is on call <br>
@@ -56,10 +62,6 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 ## action: 'test connectivity'
 
 Verify xMatters credentials by requesting a limited events page.
-
-The SDK-generated success message is `Test connectivity successful`. This replaces the legacy
-message `Connectivity test succeeded`; update any playbooks or scripts that compare the exact
-message text.
 
 Type: **test** <br>
 Read only: **True**
@@ -247,7 +249,7 @@ action_result.summary.event_id | string | | 3f48d1f6-a897-4132-9272-f2bc945adb68
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
 
-## action: 'get person'
+## action: 'get user'
 
 Get information about a user
 
@@ -296,7 +298,7 @@ action_result.summary.person_id | string | | 059c47aa-4951-46d7-bc68-073e73c900e
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
 
-## action: 'initiate event'
+## action: 'create event'
 
 Create (trigger) an event in xMatters
 
@@ -335,7 +337,7 @@ action_result.summary.event_id | string | | 2132004 |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
 
-## action: 'list people'
+## action: 'list users'
 
 Get information about multiple users matching a property name/value
 
