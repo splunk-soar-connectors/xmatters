@@ -145,7 +145,7 @@ def test_get_event_uses_sdk_oauth_state_for_password_grant(monkeypatch):
     asset = app_module.Asset(
         base_url="https://tenant.xmatters.com",
         username="user",
-        password="pass",
+        password="pass",  # pragma: allowlist secret
         client_id="client",
     )
     state = FakeState()
