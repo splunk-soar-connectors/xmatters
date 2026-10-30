@@ -9,6 +9,12 @@ runtime data. For historical data queries, the length of time you can set is lim
 plan. Please refer [Accessing Data](https://help.xmatters.com/xmapi/#accessing-data) for more
 details.
 
+## Test Connectivity Message Compatibility
+
+The SDK-generated success message for Test Connectivity is `Test connectivity successful`. The
+legacy connector used `Connectivity test succeeded`. Update any playbooks or scripts that compare
+the exact message text when migrating to the SDK app.
+
 ## Port Information
 
 The app uses HTTP/ HTTPS protocol for communicating with the xMatters server. Below are the default
