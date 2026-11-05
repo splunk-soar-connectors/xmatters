@@ -1,7 +1,7 @@
 # xMatters for SOAR
 
 Publisher: Splunk <br>
-Connector Version: 3.0.0 <br>
+Connector Version: 3.0.1 <br>
 Product Vendor: xMatters <br>
 Product Name: xMatters <br>
 Minimum Product Version: 7.0.0
